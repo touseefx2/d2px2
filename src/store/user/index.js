@@ -471,7 +471,7 @@ class user {
       });
   }
   @action.bound
-  attemptToLogin(body, goHome) {
+  attemptToLogin(body, calFunc) {
     this.setloginLoader(true);
 
     db.hitApi(db.apis.LOGIN_USER, 'post', body, null)
@@ -485,7 +485,7 @@ class user {
         //   return;
         // }
 
-        // goHome();
+        // calFunc();
       })
       .catch(err => {
         this.setloginLoader(false);

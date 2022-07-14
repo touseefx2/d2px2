@@ -37,13 +37,11 @@ export default function DropDown(props) {
       let d = [];
       props.data.map((item, i, a) => {
         let n =
-          c == 'travelcity'
+          c == 'country'
             ? item.name
-            : c == 'make'
-            ? item.brand_name
-            : c == 'name'
-            ? item.name
-            : c == 'city' || c == 'area'
+            : c == 'state'
+            ? item
+            : c == 'city'
             ? item.name
             : '';
         var Name = n.toLowerCase();
@@ -100,21 +98,11 @@ export default function DropDown(props) {
 
   const renderItems = ({item, index}) => {
     let title =
-      c == 'bookingreason'
-        ? item.reason
-        : c == 'travelcity'
+      c == 'country'
         ? item.name
-        : c == 'days'
-        ? item.title
-        : c == 'timeslots'
-        ? item.title
-        : c == 'make'
-        ? item.brand_name
-        : c == 'name'
-        ? item.name
-        : c == 'city' || c == 'area'
-        ? item.name
-        : c == 'cancelreason'
+        : c == 'state'
+        ? item
+        : c == 'city'
         ? item.title
         : '';
 
@@ -136,21 +124,11 @@ export default function DropDown(props) {
 
   let abs = 0.3;
 
-  const style =
-    data.length > 6
-      ? {
-          height: responsiveHeight(27),
-          marginTop: responsiveHeight(
-            c == 'timeslots' ? abs : absolute ? 6.3 : 0.3,
-          ),
-          position: absolute ? 'absolute' : 'relative',
-        }
-      : {
-          marginTop: responsiveHeight(
-            c == 'timeslots' ? abs : absolute ? 6.3 : 0.3,
-          ),
-          position: absolute ? 'absolute' : 'relative',
-        };
+  const style = {
+    height: responsiveHeight(27),
+    marginTop: responsiveHeight(c == 'timeslots' ? abs : absolute ? 6.3 : 0.3),
+    position: absolute ? 'absolute' : 'relative',
+  };
 
   return (
     <SafeAreaView style={[styles.Container, style]}>

@@ -33,7 +33,6 @@ import Toast from 'react-native-easy-toast';
 import MaskedView from '@react-native-community/masked-view';
 import Svg, {Path} from 'react-native-svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {ActivityIndicator} from 'react-native-paper';
 
 export default observer(Home);
 function Home(props) {
@@ -322,7 +321,6 @@ function Home(props) {
             width: '100%',
             height: '100%',
             flex: 1,
-            elevation: 3,
           }}
           resizeMode="stretch"
           source={coverImage}

@@ -358,7 +358,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     width: responsiveWidth(100),
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: theme.color.background,
     paddingVertical: 12,
   },
@@ -383,7 +383,7 @@ export const styles = StyleSheet.create({
   InputContainer: {
     width: '100%',
     backgroundColor: theme.color.background,
-    height: 40,
+    height: 38,
     borderRadius: 0,
     borderWidth: 0.7,
     borderColor: theme.color.subTitle,
@@ -395,6 +395,19 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: theme.fonts.fontNormal,
     height: '100%',
+  },
+  textInputStyleCode: {
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    left: -5,
+    textTransform: 'capitalize',
+  },
+  textDropDown: {
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    lineHeight: 15,
   },
 
   bottomButton: {

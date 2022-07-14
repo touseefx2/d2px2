@@ -29,7 +29,7 @@ function BookCard(props) {
 
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
-  let aboutAuthor = d.author_biography || '';
+  let aboutAuthor = d.writer.author_biography || '';
   let screen = props.screen || '';
 
   let name = d.book_title || '';

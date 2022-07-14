@@ -43,6 +43,8 @@ function Login(props) {
   const mobileReg = /^[3]\d{9}$/ || /^[0][3]\d{9}$/;
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
+  let screen = props.route.params.screen;
+
   // const [phone, setphone] = useState('');
   const [email, setemail] = useState(''); //street adress
   const [pswd, setpswd] = useState('');
@@ -57,7 +59,7 @@ function Login(props) {
   };
 
   const goSignup = () => {
-    props.navigation.navigate('Signup');
+    props.navigation.navigate('Signup', {screen: screen});
   };
 
   const Login = () => {
@@ -94,7 +96,7 @@ function Login(props) {
           password: pswd,
           // registrationToken: store.User.notificationToken,
         };
-        store.User.attemptToLogin(data, goHome);
+        store.User.attemptToLogin(data, goBack);
         // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
       } else {
         toast?.current?.show('Please connect internet', toastduration);
@@ -184,15 +186,13 @@ function Login(props) {
       <utils.Loader text={'Please wait'} load={loader} />
 
       <View style={styles.header}>
-        <View style={styles.back}>
-          <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
-            <utils.vectorIcon.Ionicons
-              name="chevron-back"
-              color={theme.color.subTitle}
-              size={26}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
+          <utils.vectorIcon.Ionicons
+            name="chevron-back"
+            color={theme.color.subTitle}
+            size={26}
+          />
+        </TouchableOpacity>
       </View>
 
       <KeyboardAvoidingView style={{flex: 1}}>

@@ -35,17 +35,18 @@ function Book(props) {
   const controlPointX = windowWidth / 2.0;
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
-
+  const user = store.User.user;
   const toast = useRef(null);
   const toastduration = 700;
-
+  const rbSheet = useRef(null);
   const d = props.route.params.data;
+  console.log('data : ', d);
   let pid = d._id;
   let nav = props.nav;
 
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
-  let aboutAuthor = d.author_biography || '';
+  let aboutAuthor = d.writer.author_biography || '';
   let screen = props.screen || '';
 
   let name = d.book_title || '';
@@ -62,6 +63,19 @@ function Book(props) {
 
   const goBack = () => {
     props.navigation.goBack();
+  };
+
+  const DownloadNow = () => {
+    NetInfo.fetch().then(state => {
+      if (state.isConnected) {
+        if (user) {
+          return;
+        }
+        rbSheet?.current?.open();
+      } else {
+        toast?.current?.show('Please connect internet', toastduration);
+      }
+    });
   };
 
   const renderCoverImage = () => {
@@ -167,6 +181,14 @@ function Book(props) {
             <Text style={styles.catDetails2}>{category}</Text>
           </View>
         </View>
+
+        <View style={styles.descriptionSection}>
+          <Text style={styles.foodCardDetailss}>About the author</Text>
+        </View>
+
+        <View style={styles.descriptionSection}>
+          <Text style={styles.foodCardDetails}>{aboutAuthor}</Text>
+        </View>
       </View>
     );
   };
@@ -186,8 +208,102 @@ function Book(props) {
     );
   };
 
+  const renderBottomSheet = () => {
+    const Login = () => {
+      rbSheet?.current?.close();
+      props.navigation.navigate('Login', {screen: 'book'});
+    };
+
+    const renderLoginButton = () => {
+      return (
+        <>
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => {
+              Login();
+            }}
+            style={styles.BottomButton}>
+            <Text style={styles.buttonTextBottom}>Login</Text>
+          </TouchableOpacity>
+        </>
+      );
+    };
+
+    return (
+      <>
+        <RBSheet
+          ref={rbSheet}
+          height={responsiveHeight(22)}
+          closeOnPressBack={true}
+          openDuration={250}
+          screen={''}
+          closeOnDragDown={true}
+          closeOnPressMask={true}
+          KeyboardAvoidingView={true}
+          customStyles={{
+            wrapper: {
+              flex: 1,
+              // backgroundColor: 'transparent',
+            },
+            container: {
+              backgroundColor: theme.color.background,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              elevation: 5,
+            },
+            draggableIcon: {
+              // backgroundColor: theme.color.cartbutton,
+            },
+          }}>
+          <ScrollView
+            contentContainerStyle={{paddingBottom: 20}}
+            showsVerticalScrollIndicator={false}>
+            <View
+              style={{
+                marginHorizontal: 15,
+              }}>
+              <Text
+                style={{
+                  fontFamily: theme.fonts.fontMedium,
+                  color: theme.color.title,
+                  fontSize: 18,
+                }}>
+                Please login to continue
+              </Text>
+
+              <View style={{marginTop: 30}}>{renderLoginButton()}</View>
+            </View>
+          </ScrollView>
+        </RBSheet>
+      </>
+    );
+  };
+
+  const renderBottomButton = () => {
+    return (
+      <>
+        <View
+          style={{
+            width: '100%',
+            paddingHorizontal: 20,
+            paddingVertical: 12,
+            elevation: 20,
+            backgroundColor: theme.color.background,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={DownloadNow}
+            style={styles.bottomButton}>
+            <Text style={styles.bottomButtonText}>Download Now</Text>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {renderBottomSheet()}
       <View>{renderCoverImage()}</View>
 
       <View style={styles.header}>
@@ -206,12 +322,12 @@ function Book(props) {
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 15,
-          paddingTop: 15,
         }}
         showsVerticalScrollIndicator={false}>
         {renderTitleSection()}
-        {sep()}
+        <View style={{height: 15}} />
       </ScrollView>
+      {renderBottomButton()}
       {renderFullImage()}
 
       <Toast ref={toast} position="bottom" />

@@ -167,6 +167,13 @@ export const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
+  foodCardDetailss: {
+    fontSize: 18,
+    fontFamily: theme.fonts.fontMedium,
+    color: theme.color.title,
+    lineHeight: 20,
+  },
+
   catDetails: {
     fontSize: 13,
     fontFamily: theme.fonts.fontNormal,
@@ -494,5 +501,21 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.fontBold,
     lineHeight: 20,
     // textTransform: 'capitalize',
+  },
+  bottomButton: {
+    backgroundColor: theme.color.button1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 45,
+    alignSelf: 'center',
+    elevation: 2,
+    borderRadius: 0,
+  },
+
+  bottomButtonText: {
+    color: theme.color.buttonText,
+    fontSize: 17,
+    fontFamily: theme.fonts.fontNormal,
   },
 });

@@ -61,10 +61,6 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  back: {
-    width: responsiveWidth(12),
-    justifyContent: 'center',
-  },
   titleSection: {
     width: '100%',
     marginTop: 20,
@@ -358,7 +354,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     width: responsiveWidth(100),
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: theme.color.background,
     paddingVertical: 12,
   },
@@ -383,7 +379,7 @@ export const styles = StyleSheet.create({
   InputContainer: {
     width: '100%',
     backgroundColor: theme.color.background,
-    height: 40,
+    height: 38,
     borderRadius: 0,
     borderWidth: 0.7,
     borderColor: theme.color.subTitle,
