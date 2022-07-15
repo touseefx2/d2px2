@@ -476,16 +476,13 @@ class user {
 
     db.hitApi(db.apis.LOGIN_USER, 'post', body, null)
       ?.then((resp: any) => {
-        console.log(`response  ${db.apis.LOGIN_USER} : `, resp.data);
         this.setloginLoader(false);
-        // this.addUser(resp.data.token, resp.data.doc);
-        // store.Orders.getOrderById();
-        // if (s == 'checkout') {
-        //   goCheckout();
-        //   return;
-        // }
+        console.log(`response  ${db.apis.LOGIN_USER} : `, resp.data);
+        let data = resp.data.data;
+        let token = resp.data.token;
+        this.addUser(token, data);
 
-        // calFunc();
+        calFunc();
       })
       .catch(err => {
         this.setloginLoader(false);
@@ -493,11 +490,6 @@ class user {
         console.log(`Error in ${db.apis.LOGIN_USER} : `, msg);
         if (msg == 503 || msg == 500) {
           store.General.setisServerError(true);
-          return;
-        }
-
-        if (msg == 'User Not Registered') {
-          goSignup();
           return;
         }
 
@@ -541,30 +533,59 @@ class user {
   // }
 
   @action.bound
-  registerUser(body, goHome, goCheckout, s) {
+  registerUser(body, funCal) {
     console.log('rgstr user body : ', body);
-
+    this.setregLoader(true);
     db.hitApi(db.apis.REGISTER_USER, 'post', body, null)
       ?.then(resp => {
-        console.log(`response  ${db.apis.REGISTER_USER} : `, resp.data);
         this.setregLoader(false);
-        this.addUser(resp.data.token, resp.data.data);
-        if (s == 'checkout') {
-          goCheckout();
-          return;
-        }
-        goHome();
+        console.log(`response  ${db.apis.REGISTER_USER} : `, resp.data);
+        let data = resp.data.data;
+        let token = resp.data.token;
+        this.addUser(token, data);
+        funCal();
       })
       .catch(err => {
         this.setregLoader(false);
-
         let msg = err.response.data.message || err.response.status;
         console.log(`Error in ${db.apis.REGISTER_USER} : `, msg);
         if (msg == 503 || msg == 500) {
           store.General.setisServerError(true);
           return;
         }
-        Alert.alert('', msg);
+        Alert.alert('', msg.toString());
+      });
+  }
+
+  @action.bound
+  updateUser(body, funCal) {
+    console.log('update user body : ', body);
+    console.log('auth token : ', this.authToken);
+    console.log('api cal : ', db.apis.UPDATE_USER + this.user.user._id);
+    this.setregLoader(true);
+    db.hitApi(
+      db.apis.UPDATE_USER + this.user.user._id,
+      'put',
+      body,
+      this.authToken,
+    )
+      ?.then(resp => {
+        this.setregLoader(false);
+        console.log(`response  ${db.apis.UPDATE_USER} : `, resp.data);
+        // let data = resp.data.data;
+        // let token = resp.data.token;
+        // this.addUser(token, data);
+        // funCal();
+      })
+      .catch(err => {
+        this.setregLoader(false);
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.UPDATE_USER} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+        Alert.alert('', msg.toString());
       });
   }
 
@@ -636,35 +657,35 @@ class user {
   }
 
   @action.bound
-  ChangePassword(cp, np, rp, suc) {
+  ChangePassword(cp, np, suc) {
     this.setLoader(true);
     let body = {
+      _id: this.user.user._id,
       curr_pass: cp,
-      confirm_pass: rp,
       new_pass: np,
     };
 
-    console.log('auth token : ', this.authToken);
-
     db.hitApi(
-      db.apis.CHANGE_PASSWORD + this.user._id,
+      db.apis.CHANGE_PASSWORD + this.user.user._id + '/password/change',
       'put',
       body,
-
       this.authToken,
     )
       ?.then(resp => {
+        this.setLoader(false);
         console.log(`response  ${db.apis.CHANGE_PASSWORD} : `, resp.data);
         suc();
       })
       .catch(err => {
         this.setLoader(false);
-        console.log(
-          `Error in ${db.apis.CHANGE_PASSWORD} : `,
-          err.response.data.message,
-        );
 
-        Alert.alert('', err.response.data.message);
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.CHANGE_PASSWORD} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+        Alert.alert('', msg.toString());
       });
   }
 
@@ -672,9 +693,9 @@ class user {
   Logout(goHome) {
     this.authToken = '';
     this.user = false;
-    this.setfvrtList([]);
-    this.setadrsList([]);
-    store.Orders.setorders([]);
+    // this.setfvrtList([]);
+    // this.setadrsList([]);
+    store.Downloads.setdata([]);
     this.setisGetAllDatainSplash(false);
     // this.setcart({totalbill: 0, totalitems: 0, data: []});
     goHome();

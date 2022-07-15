@@ -13,7 +13,10 @@ export default HomeStack = () => {
       <Stack.Screen name="Login" component={screens.Login} />
       <Stack.Screen name="Signup" component={screens.Signup} />
       <Stack.Screen name="Book" component={screens.Book} />
-
+      <Stack.Screen name="Setting" component={screens.Setting} />
+      <Stack.Screen name="DownloadStack" component={DownloadStack} />
+      <Stack.Screen name="Profile" component={screens.Profile} />
+      <Stack.Screen name="ChangePassword" component={screens.ChangePassword} />
       {/* <Stack.Screen name="Location" component={screens.Location} />
         <Stack.Screen name="Help" component={screens.Help} />
       <Stack.Screen name="Search" component={screens.Search} />
@@ -23,11 +26,11 @@ export default HomeStack = () => {
       <Stack.Screen name="CheckLogin" component={screens.CheckLogin} />
     
       <Stack.Screen name="OTP" component={screens.OTP} />
-      <Stack.Screen name="Setting" component={screens.Setting} />
-      <Stack.Screen name="OrderStack" component={OrderStack} />
+    
+     
       <Stack.Screen name="PromoStack" component={PromoStack} />
      
-      <Stack.Screen name="ChangePassword" component={screens.ChangePassword} />
+     
       <Stack.Screen name="Favourite" component={screens.Favourite} /> 
       <Stack.Screen
         name="OrderIndication"
@@ -38,16 +41,19 @@ export default HomeStack = () => {
   );
 };
 
-// const OrderStack = () => {
-//   return (
-//     <Stack.Navigator
-//       initialRouteName="Orders"
-//       screenOptions={{animationEnabled: false, headerShown: false}}>
-//       <Stack.Screen name="Orders" component={screens.Orders} />
-//       <Stack.Screen name="OrdersDetails" component={screens.OrdersDetails} />
-//     </Stack.Navigator>
-//   );
-// };
+const DownloadStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Downloads"
+      screenOptions={{animationEnabled: false, headerShown: false}}>
+      <Stack.Screen name="Downloads" component={screens.Downloads} />
+      <Stack.Screen
+        name="DownloadsDetails"
+        component={screens.DownloadsDetails}
+      />
+    </Stack.Navigator>
+  );
+};
 
 // const PromoStack = () => {
 //   return (

@@ -7,7 +7,7 @@ import {configure} from 'mobx';
 configure({useProxies: 'never'});
 
 LogBox.ignoreAllLogs(true);
-StatusBar.setBackgroundColor(theme.color.button1);
-StatusBar.setBarStyle('dark-content', false);
+// StatusBar.setBackgroundColor(theme.color.button1);
+// StatusBar.setBarStyle('dark-content', false);
 
 AppRegistry.registerComponent(appName, () => App);

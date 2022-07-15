@@ -382,8 +382,7 @@ export const styles = StyleSheet.create({
   },
   InputContainer: {
     width: '100%',
-    backgroundColor: theme.color.background,
-    height: 38,
+    height: 40,
     borderRadius: 0,
     borderWidth: 0.7,
     borderColor: theme.color.subTitle,

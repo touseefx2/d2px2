@@ -20,8 +20,9 @@ const hydrateStores = async () => {
   const hydrate = create({storage: AsyncStorage});
   await hydrate('General', store.General);
   await hydrate('User', store.User);
+  await hydrate('Downloads', store.Downloads);
   // await hydrate('Book', store.Food);
-  // await hydrate('Orders', store.Orders);
+
   // await hydrate('Promos', store.Promos);
   // await hydrate("citystore", store.cityStore);
   // await hydrate("notificationmanager", store.NotificationManager);
@@ -71,7 +72,7 @@ function Splash(props) {
     <SafeAreaView style={styles.container}>
       <StatusBar
         translucent
-        backgroundColor={'black'}
+        backgroundColor="transparent"
         barStyle={'light-content'}
       />
       <ImageBackground

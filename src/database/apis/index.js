@@ -11,6 +11,7 @@ const GET_SLIDER_IMAGES = 'api/settings';
 const GET_FOOD_CATEGORY = 'api/category/getAllCategories?branch=';
 const PLACE_ORDER = 'api/orders';
 const REGISTER_USER = 'customer/create';
+const UPDATE_USER = 'customer/';
 const LOGIN_USER = 'user/login';
 const IMAGE_UPLOAD = 'api/upload';
 const GET_USER_BY_ID = 'api/users?_id=';
@@ -21,7 +22,7 @@ const SET_FAVRT_FOOD_LIST_BY_USER_ID = 'api/orders?customer=';
 const REMOVE_FAVRT_FOOD_LIST_BY_USER_ID = 'api/orders?customer=';
 const ADD_ADDRESS_BY_USER_ID = 'api/orders?customer=';
 const REMOVE_ADDRESS_BY_USER_ID = 'api/orders?customer=';
-const CHANGE_PASSWORD = 'api/users/changePassword/';
+const CHANGE_PASSWORD = 'user/';
 const SUBSCRIBE_TOPIC = 'api/pushnotification/subscribeToTopic';
 const CHECK_PROMO = 'api/promocode/checkCodeValidity';
 const GET_All_PROMOS_BY_ID = 'api/promocode/getActiveCodes?city=';
@@ -33,6 +34,7 @@ export default apis = {
   GET_FOOD_CATEGORY,
   PLACE_ORDER,
   REGISTER_USER,
+  UPDATE_USER,
   LOGIN_USER,
   IMAGE_UPLOAD,
   GET_USER_BY_ID,

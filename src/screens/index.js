@@ -11,13 +11,13 @@ import Book from './Book';
 import Signup from './Signup';
 // import OTP from './OTP';
 import Login from './Login';
-// import Setting from './Setting';
-// import ChangePassword from './ChangePassword';
+import Setting from './Setting';
+import ChangePassword from './ChangePassword';
 // import Favourite from './Favourite';
-// import Orders from './Orders';
-// import OrdersDetails from './OrdersDetails';
+import Downloads from './Downloads';
+import DownloadsDetails from './DownloadsDetails';
 // import OrderIndication from './OrderIndication';
-// import Promo from './Promo';
+import Profile from './Profile';
 // import PromoDetails from './PromoDetails';
 // import Notification from "./Notification/index";
 // import Notification_Detail from "./Notification_Detail/index";
@@ -35,12 +35,13 @@ export default screens = {
   Signup,
   // CheckLogin,
   // OTP,
-  // Setting,
-  // Orders,
+  Setting,
+  Downloads,
   Login,
-  // ChangePassword,
+  ChangePassword,
   // Favourite,
-  // OrdersDetails,
+  DownloadsDetails,
+  Profile,
   // OrderIndication,
   // Promo,
   // PromoDetails,

@@ -11,25 +11,25 @@ import {Alert} from 'react-native';
 // import store from '../index';
 // import auth from '@react-native-firebase/auth';
 
-class orders {
+class downloads {
   constructor() {
     makeObservable(this);
   }
 
   @observable loader = false;
 
-  @persist('object') @observable orders = [];
+  @persist('object') @observable data = [];
 
   @action setloader = obj => {
     this.loader = obj;
   };
 
-  @action setorders = obj => {
-    this.orders = obj;
+  @action setdata = obj => {
+    this.data = obj;
   };
 
   @action.bound
-  getOrderById() {
+  getDataById() {
     this.setloader(true);
     console.log(db.apis.GET_ORDERS_BY_USER_ID + store.User.user._id);
     db.hitApi(
@@ -41,7 +41,7 @@ class orders {
       ?.then((resp: any) => {
         console.log(`response  ${db.apis.GET_ORDERS_BY_USER_ID} : `, resp.data);
         this.setloader(false);
-        this.setorders(resp.data);
+        // this.setdata(resp.data);
       })
       .catch(err => {
         this.setloader(false);
@@ -53,7 +53,7 @@ class orders {
         }
 
         if (msg == 'No records found') {
-          this.setorders([]);
+          this.setdata([]);
           return;
         }
 
@@ -62,4 +62,4 @@ class orders {
   }
 }
 
-export const Orders = new orders();
+export const Downloads = new downloads();

@@ -8,7 +8,7 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.color.background,
   },
   section1: {
     marginTop: '12%',
@@ -21,13 +21,7 @@ export const styles = StyleSheet.create({
     height: responsiveHeight(20),
     resizeMode: 'cover',
   },
-  htitle: {
-    fontSize: 18,
-    fontFamily: theme.fonts.fontMedium,
-    color: theme.color.title,
-    textTransform: 'capitalize',
-    marginLeft: 15,
-  },
+
   title: {
     fontSize: 30,
     fontFamily: theme.fonts.fontBold,
@@ -67,7 +61,10 @@ export const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  back: {},
+  back: {
+    width: responsiveWidth(12),
+    justifyContent: 'center',
+  },
   titleSection: {
     width: '100%',
     marginTop: 20,
@@ -81,14 +78,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 15,
   },
-  header: {
-    width: responsiveWidth(100),
-    paddingHorizontal: 12,
-    elevation: 5,
-    backgroundColor: theme.color.background,
-    paddingVertical: 12,
-    flexDirection: 'row',
-  },
+
   headerSection1: {
     width: '45%',
     // backgroundColor: 'red',
@@ -286,19 +276,6 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  Input: {
-    width: '100%',
-    color: theme.color.title,
-    backgroundColor: theme.color.background,
-    fontSize: 12,
-    fontFamily: theme.fonts.fontNormal,
-    height: 40,
-    borderRadius: 5,
-    borderWidth: 0.6,
-    borderColor: theme.color.subTitle,
-    marginTop: 20,
-    paddingHorizontal: 10,
-  },
   MobileInput: {
     width: '100%',
     flexDirection: 'row',
@@ -308,16 +285,17 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.color.background,
     fontSize: 12,
     fontFamily: theme.fonts.fontNormal,
-    height: 40,
-    borderRadius: 5,
-    borderWidth: 0.6,
-    borderColor: theme.color.subTitle,
+    height: 46,
+    borderRadius: 6,
+    borderWidth: 0.5,
+    borderColor: theme.color.subTitleLight,
     marginTop: 20,
     paddingHorizontal: 10,
   },
   MobileInput2: {
     width: '80%',
     color: theme.color.title,
+
     fontSize: 12,
     fontFamily: theme.fonts.fontNormal,
     height: 40,
@@ -378,4 +356,97 @@ export const styles = StyleSheet.create({
     top: Platform.OS == 'ios' ? theme.window.APPBAR_HEIGHT + 12 : 12,
     left: 12,
   },
+  header: {
+    width: responsiveWidth(100),
+    paddingHorizontal: 15,
+    backgroundColor: theme.color.background,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    elevation: 5,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontFamily: theme.fonts.fontMedium,
+    color: theme.color.title,
+    textTransform: 'capitalize',
+  },
+  headerRightTitle: {
+    fontSize: 14,
+    fontFamily: theme.fonts.fontMedium,
+    color: theme.color.subTitle,
+    textTransform: 'capitalize',
+  },
+
+  inputFieldConatiner: {marginBottom: 10},
+  inputTitle: {
+    fontSize: 15,
+    lineHeight: 20,
+    color: theme.color.title,
+    fontFamily: theme.fonts.fontNormal,
+    textTransform: 'capitalize',
+    marginBottom: 5,
+  },
+
+  InputContainerP: {
+    paddingVertical: 10,
+    borderRadius: 0,
+    borderWidth: 0.7,
+    borderColor: theme.color.subTitle,
+    paddingHorizontal: 10,
+  },
+  textInputStyleP: {
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    textTransform: 'capitalize',
+  },
+
+  InputContainer: {
+    width: '100%',
+    height: 40,
+    borderRadius: 0,
+    borderWidth: 0.7,
+    borderColor: theme.color.subTitle,
+    paddingHorizontal: 10,
+  },
+  textInputStyle: {
+    width: '100%',
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    height: '100%',
+  },
+  textInputStyleCode: {
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    left: -5,
+    textTransform: 'capitalize',
+  },
+  textDropDown: {
+    color: theme.color.title,
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    lineHeight: 15,
+  },
+
+  bottomButton: {
+    backgroundColor: theme.color.button1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 45,
+    alignSelf: 'center',
+    elevation: 2,
+    borderRadius: 0,
+  },
+
+  bottomButtonText: {
+    color: theme.color.buttonText,
+    fontSize: 17,
+    fontFamily: theme.fonts.fontNormal,
+  },
+  inputRightIcon: {},
 });

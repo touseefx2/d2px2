@@ -26,11 +26,6 @@ import {
 } from 'react-native-responsive-dimensions';
 import Toast from 'react-native-easy-toast';
 import NetInfo from '@react-native-community/netinfo';
-import Geolocation from 'react-native-geolocation-service';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
-import Geocoder from 'react-native-geocoding';
-import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
-import {Image as ImageCompressor} from 'react-native-compressor';
 
 export default observer(ChangePassword);
 function ChangePassword(props) {
@@ -79,8 +74,8 @@ function ChangePassword(props) {
       return;
     }
 
-    if (pswd.length < 8) {
-      toast?.current?.show('New password must be minimum 8 characters');
+    if (pswd.length < 7) {
+      toast?.current?.show('Password length must be greater than 6');
       return;
     }
 
@@ -89,13 +84,13 @@ function ChangePassword(props) {
       return;
     }
     if (pswd !== rpswd) {
-      toast?.current?.show('Password does not match');
+      toast?.current?.show('Password do not match');
       return;
     }
 
     NetInfo.fetch().then(state => {
       if (state.isConnected) {
-        store.User.ChangePassword(cpswd, pswd, rpswd, showSuccesOrder);
+        store.User.ChangePassword(cpswd, pswd, showSuccesOrder);
       } else {
         toast?.current?.show('Please connect internet', toastduration);
       }
@@ -121,7 +116,7 @@ function ChangePassword(props) {
           style={{
             color: theme.color.buttonText,
             fontSize: 16,
-            fontFamily: theme.fonts.fontMedium,
+            fontFamily: theme.fonts.fontNormal,
           }}>
           Update Password
         </Text>

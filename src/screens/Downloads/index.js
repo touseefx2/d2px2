@@ -22,48 +22,46 @@ import {
 } from 'react-native-responsive-dimensions';
 import moment from 'moment';
 
-export default observer(Orders);
-function Orders(props) {
-  // const data = props.route.params.food;
-
+export default observer(Downloads);
+function Downloads(props) {
   let internet = store.General.isInternet;
-  let orders = store.Orders.orders;
-  let loader = store.Orders.loader;
+  let downloads = store.Downloads.data;
+  let loader = store.Downloads.loader;
   const [data, setdata] = useState(false);
 
   useEffect(() => {
     if (internet) {
-      store.Orders.getOrderById();
+      store.Downloads.getDataById();
     }
   }, [internet]);
 
   useEffect(() => {
-    if (orders.length > 0) {
-      let o = [];
-      orders.map((e, i, a) => {
-        const d = {...e};
+    if (downloads.length > 0) {
+      // let o = [];
+      // orders.map((e, i, a) => {
+      //   const d = {...e};
 
-        let pp = [];
-        let p = e.products;
-        if (p.length > 0) {
-          p.map((d, i, a) => {
-            let avblbl = d.notAvailable || false;
-            if (!avblbl) {
-              pp.push(d);
-            }
-          });
-        }
+      //   let pp = [];
+      //   let p = e.products;
+      //   if (p.length > 0) {
+      //     p.map((d, i, a) => {
+      //       let avblbl = d.notAvailable || false;
+      //       if (!avblbl) {
+      //         pp.push(d);
+      //       }
+      //     });
+      //   }
 
-        delete d.products;
-        d.products = pp;
-        o.push(d);
-      });
+      //   delete d.products;
+      //   d.products = pp;
+      //   o.push(d);
+      // });
 
-      setdata(o);
+      setdata(downloads);
     } else {
       setdata([]);
     }
-  }, [orders]);
+  }, [downloads]);
 
   const goBack = () => {
     props.navigation.goBack();
@@ -74,150 +72,6 @@ function Orders(props) {
     var dd = moment(d).format('DD-MM-Y');
     return dd + ', ' + tt;
   };
-
-  // const renderShowOrder = () => {
-  //   const dd = data.map((e, i, a) => {
-  //     let oid = e.orderId || '';
-  //     let item = '';
-  //     let createdAt = e.createdAt;
-
-  //     if (e.products?.length > 0) {
-  //       e.products.map((ee, i, a) => {
-  //         item = item + ee.productName + ', ';
-  //       });
-  //       item = item.replace(/,\s*$/, '');
-  //     }
-
-  //     let dType = e.deliveryType || '';
-
-  //     let totalll = parseFloat(e.finalBill) || 0;
-
-  //     return (
-  //       <TouchableOpacity
-  //         activeOpacity={0.6}
-  //         onPress={() => props.navigation.navigate('OrdersDetails', {data: e})}
-  //         style={{
-  //           width: '100%',
-  //           backgroundColor: theme.color.background,
-  //           elevation: 5,
-  //           marginTop: 10,
-  //           marginBottom: i == a.length - 1 ? 10 : 0,
-  //           padding: 10,
-  //           borderRadius: 7,
-  //           flexDirection: 'row',
-  //           alignItems: 'center',
-  //           justifyContent: 'space-between',
-  //         }}>
-  //         <View style={{width: '88%'}}>
-  //           <View
-  //             style={{
-  //               flexDirection: 'row',
-  //               alignItems: 'center',
-  //               justifyContent: 'space-between',
-  //             }}>
-  //             <View style={{width: '20%'}}>
-  //               <Text
-  //                 style={styles.title}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 Order #{' '}
-  //               </Text>
-  //             </View>
-  //             <View style={{width: '79%'}}>
-  //               <Text
-  //                 style={[styles.title2, {textTransform: 'uppercase'}]}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 {oid}
-  //               </Text>
-  //             </View>
-  //           </View>
-
-  //           <View
-  //             style={{
-  //               flexDirection: 'row',
-  //               alignItems: 'center',
-  //               justifyContent: 'space-between',
-  //             }}>
-  //             <View style={{width: '20%'}}>
-  //               <Text
-  //                 style={styles.title}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 Items:
-  //               </Text>
-  //             </View>
-  //             <View style={{width: '79%'}}>
-  //               <Text
-  //                 style={styles.title2}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 {item}
-  //               </Text>
-  //             </View>
-  //           </View>
-
-  //           <View
-  //             style={{
-  //               flexDirection: 'row',
-  //               alignItems: 'center',
-  //               justifyContent: 'space-between',
-  //             }}>
-  //             <View style={{width: '20%'}}>
-  //               <Text
-  //                 style={styles.title}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 Total:
-  //               </Text>
-  //             </View>
-  //             <View style={{width: '79%'}}>
-  //               <Text
-  //                 style={styles.title2}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 Rs. {totalll.toFixed()}
-  //               </Text>
-  //             </View>
-  //           </View>
-
-  //           <View
-  //             style={{
-  //               flexDirection: 'row',
-  //               alignItems: 'center',
-  //               justifyContent: 'space-between',
-  //             }}>
-  //             <View style={{width: '20%'}}>
-  //               <Text
-  //                 style={styles.title}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 Date:
-  //               </Text>
-  //             </View>
-  //             <View style={{width: '79%'}}>
-  //               <Text
-  //                 style={styles.title2}
-  //                 numberOfLines={1}
-  //                 ellipsizeMode="tail">
-  //                 {formateDateTime(createdAt)}
-  //               </Text>
-  //             </View>
-  //           </View>
-  //         </View>
-  //         <View style={{width: '10%', alignItems: 'flex-end'}}>
-  //           <utils.vectorIcon.AntDesign
-  //             name="right"
-  //             color={theme.color.subTitle}
-  //             size={22}
-  //           />
-  //         </View>
-  //       </TouchableOpacity>
-  //     );
-  //   });
-
-  //   return dd;
-  // };
 
   const renderShowOrder = ({item, index}) => {
     const e = item;

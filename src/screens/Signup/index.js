@@ -28,21 +28,23 @@ import {
 } from 'react-native-responsive-dimensions';
 import Toast from 'react-native-easy-toast';
 import NetInfo from '@react-native-community/netinfo';
-import CountryPicker from 'react-native-country-picker-modal';
+
 import {getCountries, getStates} from 'country-state-picker';
 import IntlPhoneInput from 'react-native-intl-phone-input';
 
 export default observer(Signup);
 function Signup(props) {
   const toast = useRef(null);
-  const toastduration = 1000;
+  const toastduration = 700;
+  let screen = props.route.params.screen;
 
   const window = Dimensions.get('window');
   const {width, height} = window;
   const LATITUDE_DELTA = 0.0922;
   const LONGITUDE_DELTA = LATITUDE_DELTA + width / height;
 
-  let loader = store.User.loginLoader;
+  let loader = store.User.regLoader;
+  var nameReg = /^[a-zA-Z ]{2,40}$/;
   const mobileReg = /^[3]\d{9}$/ || /^[0][3]\d{9}$/;
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
@@ -60,28 +62,13 @@ function Signup(props) {
   const [stateList, setstateList] = useState([]);
 
   const [phone, setphone] = useState('');
+  const [isVerifyPhone, setisVerifyPhone] = useState('a');
   const [name, setname] = useState('');
   const [email, setemail] = useState('');
   const [pswd, setpswd] = useState('');
   const [spswd, setspswd] = useState(false);
   const [cpswd, setcpswd] = useState('');
   const [scpswd, setscpswd] = useState(false);
-
-  const [countryCode, setCountryCode] = useState('PK');
-  const [countrycode, setCountrycode] = useState('92');
-  const [withCountryNameButton, setWithCountryNameButton] = useState(false);
-  const [withFlag, setWithFlag] = useState(true);
-  const [withEmoji, setWithEmoji] = useState(true);
-  const [withFilter, setWithFilter] = useState(true);
-  const [withAlphaFilter, setWithAlphaFilter] = useState(false);
-  const [withCallingCode, setWithCallingCode] = useState(false);
-  const onSelect = country => {
-    console.log('asasasa , ', country);
-    setCountryCode(country.cca2);
-    setCountrycode(country.callingCode);
-  };
-
-  const [phoneNo, setphoneNo] = useState('');
 
   useEffect(() => {
     getAllCountries();
@@ -123,46 +110,119 @@ function Signup(props) {
     goBack();
   };
 
-  const Login = () => {
+  const Signup = () => {
     Keyboard.dismiss();
-    // if (phone == '') {
-    //   toast?.current?.show('Please enter your phone number');
-    //   return;
-    // }
+    closeAllDropDown();
 
-    // if (phone !== '' && mobileReg.test(phone) === false) {
-    //   toast?.current?.show('Your phone number is inavlid');
-    //   return;
-    // }
+    if (name == '') {
+      toast?.current?.show('Please enter your name', toastduration);
+      return;
+    }
+
+    if (name != '' && nameReg.test(name) === false) {
+      toast?.current?.show('Please enter your correct name', toastduration);
+      return;
+    }
 
     if (email == '') {
-      toast?.current?.show('Please enter your email');
+      toast?.current?.show('Please enter your email', toastduration);
       return;
     }
 
     if (email !== '' && emailReg.test(email) === false) {
-      toast?.current?.show('Your email pattern is invalid', 1000);
+      toast?.current?.show('Your email pattern is invalid', toastduration);
+      return;
+    }
+
+    if (phone == '') {
+      toast?.current?.show('Please enter your phone number', toastduration);
+      return;
+    }
+
+    if (phone !== '' && !isVerifyPhone) {
+      toast?.current?.show('Your phone number is inavlid', toastduration);
+      return;
+    }
+
+    if (!country) {
+      toast?.current?.show('Please select your country', toastduration);
+      return;
+    }
+
+    if (state == '') {
+      toast?.current?.show('Please select your state', toastduration);
+      return;
+    }
+
+    if (city == '') {
+      toast?.current?.show('Please enter your city', toastduration);
+      return;
+    }
+
+    if (zc == '') {
+      toast?.current?.show('Please enter your zip code', toastduration);
+      return;
+    }
+    if (sa == '') {
+      toast?.current?.show('Please enter your street address', toastduration);
       return;
     }
 
     if (pswd == '') {
-      toast?.current?.show('Please enter your password', 1000);
+      toast?.current?.show('Please enter your password', toastduration);
       return;
     }
 
-    NetInfo.fetch().then(state => {
-      if (state.isConnected) {
+    if (pswd.length < 7) {
+      toast?.current?.show(
+        'Password length must be greater than 6',
+        toastduration,
+      );
+      return;
+    }
+
+    if (cpswd == '') {
+      toast?.current?.show('Please enter your confirm password', toastduration);
+      return;
+    }
+
+    if (pswd != cpswd) {
+      toast?.current?.show('Confirm password not match', toastduration);
+      return;
+    }
+
+    NetInfo.fetch().then(statee => {
+      if (statee.isConnected) {
         const data = {
+          name: name,
           email: email,
           password: pswd,
+          phone: phone,
+          address: {
+            name: sa,
+            zip: zc,
+            city: city,
+            state: state,
+            country: country.name,
+          },
           // registrationToken: store.User.notificationToken,
         };
-        store.User.attemptToLogin(data, goHome);
-        // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
+
+        store.User.registerUser(data, goHome);
       } else {
         toast?.current?.show('Please connect internet', toastduration);
       }
     });
+  };
+
+  const setPhoneNumber = p => {
+    console.log('p : ', p.isVerified);
+    setisVerifyPhone(p.isVerified);
+    if (p.unmaskedPhoneNumber == '') {
+      setphone('');
+    } else {
+      setphone(p.dialCode + p.unmaskedPhoneNumber);
+    }
   };
 
   const renderBottomButton = () => {
@@ -178,7 +238,7 @@ function Signup(props) {
           }}>
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={Login}
+            onPress={Signup}
             style={styles.bottomButton}>
             <Text style={styles.bottomButtonText}>Sign Up</Text>
           </TouchableOpacity>
@@ -342,17 +402,11 @@ function Signup(props) {
             Let's create your account!
           </Text>
 
-          <IntlPhoneInput
-            onChangeText={() => {}}
-            defaultCountry="PK"
-            lang="EN"
-            // renderAction={() => <Text>XX</Text>}
-          />
-
           <View style={styles.inputFieldConatiner}>
             <Text style={styles.inputTitle}>Name</Text>
             <View style={styles.InputContainer}>
               <TextInput
+                maxLength={40}
                 style={styles.textInputStyle}
                 placeholderTextColor={theme.color.subTitle}
                 placeholder=""
@@ -381,40 +435,32 @@ function Signup(props) {
 
           <View style={styles.inputFieldConatiner}>
             <Text style={styles.inputTitle}>Contact No.</Text>
-            <View
-              style={[
-                styles.InputContainer,
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                },
-              ]}>
-              <CountryPicker
-                modalProps={{
-                  transparent: true,
+            <View style={styles.InputContainer}>
+              <IntlPhoneInput
+                onChangeText={p => {
+                  setPhoneNumber(p);
                 }}
-                {...{
-                  countryCode,
-                  withFilter,
-                  withFlag,
-                  withCountryNameButton,
-                  withAlphaFilter,
-                  withCallingCode,
-                  withEmoji,
-                  onSelect,
-                }}
-              />
+                defaultCountry="PK"
+                lang="EN"
+                renderAction={() => (
+                  <>
+                    {!isVerifyPhone && phone != '' && (
+                      <utils.vectorIcon.Entypo
+                        name="cross"
+                        color={theme.color.subTitle}
+                        size={18}
+                      />
+                    )}
 
-              <Text style={styles.textInputStyleCode}>{countrycode}</Text>
-
-              <TextInput
-                style={[styles.textInputStyle, {width: '70%'}]}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={phone}
-                onChangeText={val => {
-                  setphone(val);
-                }}
+                    {isVerifyPhone == true && (
+                      <utils.vectorIcon.Entypo
+                        name="check"
+                        color={'green'}
+                        size={18}
+                      />
+                    )}
+                  </>
+                )}
               />
             </View>
           </View>
@@ -541,12 +587,15 @@ function Signup(props) {
               <Text style={styles.inputTitle}>Zip Code</Text>
               <View style={styles.InputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   style={styles.textInputStyle}
                   placeholderTextColor={theme.color.subTitle}
                   placeholder=""
+                  value={zc}
+                  maxLength={10}
                   defaultValue={zc}
                   onChangeText={val => {
-                    setzc(val);
+                    setzc(val.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''));
                   }}
                 />
               </View>

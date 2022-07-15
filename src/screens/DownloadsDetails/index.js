@@ -21,8 +21,8 @@ import {
 } from 'react-native-responsive-dimensions';
 import moment from 'moment';
 
-export default observer(OrdersDetails);
-function OrdersDetails(props) {
+export default observer(DownloadsDetails);
+function DownloadsDetails(props) {
   const d = props.route.params.data;
 
   let contact = store.Food.sliderImages;

@@ -20,15 +20,15 @@ import theme from '../../theme';
 
 export default observer(Setting);
 function Setting(props) {
-  // const data = props.route.params.food;
-
   let user = store.User.user;
 
-  let name = user.username || '';
-  let phone = user.mobile || '';
-  let email = user.email || '';
+  console.log('user : ', user);
 
-  let image = user.image
+  let name = user?.user.name || '';
+  let phone = user?.phone || '';
+  let email = user?.user.email || '';
+
+  let image = user?.image
     ? {uri: user.image}
     : require('../../assets/images/profile/profileimage.png');
 
@@ -152,6 +152,7 @@ function Setting(props) {
             }}>
             <TouchableOpacity
               activeOpacity={0.8}
+              disabled
               onPress={() => {
                 Keyboard.dismiss();
                 let i = user.image || '';
@@ -201,7 +202,7 @@ function Setting(props) {
               }}
               numberOfLines={1}
               ellipsizeMode="tail">
-              +{phone}
+              {phone}
             </Text>
             <Text
               style={{
@@ -230,7 +231,41 @@ function Setting(props) {
 
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => props.navigation.navigate('OrderStack')}
+          onPress={() => props.navigation.navigate('Profile')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 12,
+          }}>
+          <View
+            style={{width: '90%', flexDirection: 'row', alignItems: 'center'}}>
+            <utils.vectorIcon.Ionicons
+              name="person-circle"
+              color={theme.color.subTitle}
+              size={22}
+            />
+            <Text
+              style={{
+                fontSize: 15,
+                marginLeft: 7,
+                color: theme.color.title,
+                fontFamily: theme.fonts.fontMedium,
+              }}>
+              Profile
+            </Text>
+          </View>
+          <utils.vectorIcon.AntDesign
+            name="right"
+            color={theme.color.subTitle}
+            size={22}
+          />
+        </TouchableOpacity>
+        {sep()}
+
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => props.navigation.navigate('DownloadStack')}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -251,7 +286,7 @@ function Setting(props) {
                 color: theme.color.title,
                 fontFamily: theme.fonts.fontMedium,
               }}>
-              My Orders
+              Downloads
             </Text>
           </View>
           <utils.vectorIcon.AntDesign
@@ -265,7 +300,7 @@ function Setting(props) {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => {
-            props.navigation.navigate('Favourite');
+            // props.navigation.navigate('Favourite');
           }}
           style={{
             flexDirection: 'row',
@@ -309,7 +344,7 @@ function Setting(props) {
           </Text>
         </View>
 
-        {/* <TouchableOpacity
+        <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => {
             props.navigation.navigate('ChangePassword');
@@ -343,9 +378,9 @@ function Setting(props) {
             size={22}
           />
         </TouchableOpacity>
-        {sep()} */}
+        {sep()}
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => props.navigation.navigate('PromoStack')}
           style={{
@@ -378,7 +413,7 @@ function Setting(props) {
           />
         </TouchableOpacity>
 
-        {sep()}
+        {sep()} */}
 
         <TouchableOpacity
           activeOpacity={0.5}

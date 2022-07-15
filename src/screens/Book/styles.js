@@ -498,7 +498,7 @@ export const styles = StyleSheet.create({
   buttonTextBottom: {
     color: theme.color.buttonText,
     fontSize: 16,
-    fontFamily: theme.fonts.fontBold,
+    fontFamily: theme.fonts.fontNormal,
     lineHeight: 20,
     // textTransform: 'capitalize',
   },

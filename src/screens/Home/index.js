@@ -43,7 +43,7 @@ function Home(props) {
   const rbSheet = useRef(null);
   const rbSheet2 = useRef(null);
   const toast = useRef(null);
-
+  const user = store.User.user;
   const windowWidth = theme.window.Width;
   const imageAspectWidth = 375;
   const imageAspectHeight = 332;
@@ -57,7 +57,7 @@ function Home(props) {
 
   const [data, setData] = useState([
     {title: 'Adver Book', key: 'item1', data: []},
-    {title: 'Downloads', key: 'item2', data: []},
+    // {title: 'Downloads', key: 'item2', data: []},
   ]);
   const [category, setCategory] = useState([]);
   const [isCatModalVisible, setisCatModalVisible] = useState(false);
@@ -246,7 +246,7 @@ function Home(props) {
         // props.navigation.navigate('CheckLogin', {screen: 'home'});
         return;
       }
-      // props.navigation.navigate('Setting');
+      props.navigation.navigate('Setting');
     };
 
     const iconColor = 'black';
@@ -612,6 +612,7 @@ function Home(props) {
 
       <DynamicTabView
         data={data}
+        user={user ? true : false}
         defaultIndex={0}
         renderTab={renderTab}
         onChangeTab={onChangeTab}
