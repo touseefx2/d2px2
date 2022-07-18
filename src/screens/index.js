@@ -6,7 +6,7 @@ import Book from './Book';
 // import Search from './Search';
 // import Map from './Map';
 // import Checkout from './Checkout';
-// import OrderLocation from './OrderLocation';
+ import PDF from './Pdf';
 // import CheckLogin from './CheckLogin';
 import Signup from './Signup';
 // import OTP from './OTP';
@@ -27,6 +27,7 @@ export default screens = {
   // Location,
   Home,
   Book,
+  PDF,
   // Help,
   // Search,
   // Map,

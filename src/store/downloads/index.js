@@ -17,11 +17,16 @@ class downloads {
   }
 
   @observable loader = false;
+  @observable loader2 = false;
 
   @persist('object') @observable data = [];
 
   @action setloader = obj => {
     this.loader = obj;
+  };
+
+  @action setloader2 = obj => {
+    this.loader2 = obj;
   };
 
   @action setdata = obj => {
@@ -31,7 +36,7 @@ class downloads {
   @action.bound
   getDataById() {
     this.setloader(true);
-    console.log(db.apis.GET_ORDERS_BY_USER_ID + store.User.user._id);
+    // console.log(db.apis.GET_ORDERS_BY_USER_ID + store.User.user.user._id);
     db.hitApi(
       db.apis.GET_ORDERS_BY_USER_ID + store.User.user._id,
       'get',
@@ -41,7 +46,7 @@ class downloads {
       ?.then((resp: any) => {
         console.log(`response  ${db.apis.GET_ORDERS_BY_USER_ID} : `, resp.data);
         this.setloader(false);
-        // this.setdata(resp.data);
+        this.setdata(resp.data.data);
       })
       .catch(err => {
         this.setloader(false);
@@ -57,7 +62,37 @@ class downloads {
           return;
         }
 
-        Alert.alert('', msg);
+        Alert.alert('', msg.toString());
+      });
+  }
+
+  @action.bound
+  DownloadBook(book,funCal) {
+    this.setloader2(true);
+
+    let body = {
+      adverbook : book,
+      user: store.User.user._id,
+      book : book._id
+    };
+console.log(db.apis.DOWNLOAD_BOOK)
+console.log("body : ",body)
+    db.hitApi(db.apis.DOWNLOAD_BOOK, 'post', body, store.User.authToken)
+      ?.then((resp: any) => {
+        this.setloader2(false);
+        console.log(`response  ${db.apis.DOWNLOAD_BOOK} : `, resp.data);
+        funCal();
+      })
+      .catch(err => {
+        this.setloader2(false);
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.DOWNLOAD_BOOK} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+
+        Alert.alert('', msg.toString());
       });
   }
 }

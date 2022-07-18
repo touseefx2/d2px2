@@ -47,10 +47,11 @@ const DownloadStack = () => {
       initialRouteName="Downloads"
       screenOptions={{animationEnabled: false, headerShown: false}}>
       <Stack.Screen name="Downloads" component={screens.Downloads} />
-      <Stack.Screen
+      <Stack.Screen name="Pdf" component={screens.PDF} />
+      {/* <Stack.Screen
         name="DownloadsDetails"
         component={screens.DownloadsDetails}
-      />
+      /> */}
     </Stack.Navigator>
   );
 };

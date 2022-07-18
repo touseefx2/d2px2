@@ -1,7 +1,7 @@
 //online link  ec2
 // const BASE_URL = 'http://ec2-13-126-235-46.ap-south-1.compute.amazonaws.com/';
 //local link
-const BASE_URL = 'http://10.7.148.5:9000/';
+const BASE_URL = 'http://10.7.149.172:9000/';
 
 //apis
 
@@ -15,7 +15,7 @@ const UPDATE_USER = 'customer/';
 const LOGIN_USER = 'user/login';
 const IMAGE_UPLOAD = 'api/upload';
 const GET_USER_BY_ID = 'api/users?_id=';
-const GET_ORDERS_BY_USER_ID = 'api/orders?customer=';
+const GET_ORDERS_BY_USER_ID = 'adverbook/downloadedbooks?user=';
 const GET_FAVRT_FOOD_LIST_BY_USER_ID = 'api/orders?customer=';
 const GET_ADDRESS_BY_USER_ID = 'api/orders?customer=';
 const SET_FAVRT_FOOD_LIST_BY_USER_ID = 'api/orders?customer=';
@@ -26,6 +26,10 @@ const CHANGE_PASSWORD = 'user/';
 const SUBSCRIBE_TOPIC = 'api/pushnotification/subscribeToTopic';
 const CHECK_PROMO = 'api/promocode/checkCodeValidity';
 const GET_All_PROMOS_BY_ID = 'api/promocode/getActiveCodes?city=';
+
+
+const DOWNLOAD_BOOK="adverbook/download" 
+
 export default apis = {
   BASE_URL,
   GET_ALL_CATEGORY,
@@ -49,6 +53,7 @@ export default apis = {
   SUBSCRIBE_TOPIC,
   CHECK_PROMO,
   GET_All_PROMOS_BY_ID,
+  DOWNLOAD_BOOK
 };
 
 // const login = 'user/loginCaptain';

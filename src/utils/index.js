@@ -1,6 +1,8 @@
 import vectorIcon from './vectorIcon';
 import InternetMessage from './InternetMessage';
 import BookCard from './BookCard';
+import BookCardDownload from './BookCardDownload';
+
 // import FooterCart from './FooterCart';
 import Loader from './Loader';
 // import FoodVariationModal from './FoodVariationModal';
@@ -35,6 +37,7 @@ const utils = {
   BookCard,
   Loader,
   FilterModal,
+  BookCardDownload
   // FooterCart,
   // FoodVariationModal,
   // FoodVariationDetailModal,

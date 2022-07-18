@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -21,12 +21,15 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import moment from 'moment';
+import Toast from 'react-native-easy-toast';
+import { User } from '../../store/user';
 
 export default observer(Downloads);
 function Downloads(props) {
   let internet = store.General.isInternet;
   let downloads = store.Downloads.data;
   let loader = store.Downloads.loader;
+  const toast= useRef(null)
   const [data, setdata] = useState(false);
 
   useEffect(() => {
@@ -37,26 +40,7 @@ function Downloads(props) {
 
   useEffect(() => {
     if (downloads.length > 0) {
-      // let o = [];
-      // orders.map((e, i, a) => {
-      //   const d = {...e};
-
-      //   let pp = [];
-      //   let p = e.products;
-      //   if (p.length > 0) {
-      //     p.map((d, i, a) => {
-      //       let avblbl = d.notAvailable || false;
-      //       if (!avblbl) {
-      //         pp.push(d);
-      //       }
-      //     });
-      //   }
-
-      //   delete d.products;
-      //   d.products = pp;
-      //   o.push(d);
-      // });
-
+   
       setdata(downloads);
     } else {
       setdata([]);
@@ -78,128 +62,17 @@ function Downloads(props) {
     const i = index;
     const a = data.length;
 
-    let oid = e.orderId || '';
-    let itemm = '';
-    let createdAt = e.createdAt;
-
-    if (e.products?.length > 0) {
-      e.products.map((ee, i, a) => {
-        itemm = itemm + ee.productName + ', ';
-      });
-      itemm = itemm.replace(/,\s*$/, '');
-    }
-
-    let totalll = parseFloat(e.finalBill) || 0;
-
+  const dt=e;
+  const book=dt.book
+   
     return (
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => props.navigation.navigate('OrdersDetails', {data: e})}
-        style={{
-          width: '100%',
-          backgroundColor: theme.color.background,
-          elevation: 3,
-          marginTop: i <= 0 ? 0 : 10,
-
-          padding: 10,
-          borderRadius: 7,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <View style={{width: '88%'}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{width: '20%'}}>
-              <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-                Order #{' '}
-              </Text>
-            </View>
-            <View style={{width: '79%'}}>
-              <Text
-                style={[styles.title2, {textTransform: 'uppercase'}]}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {oid}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{width: '20%'}}>
-              <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-                Items:
-              </Text>
-            </View>
-            <View style={{width: '79%'}}>
-              <Text
-                style={styles.title2}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {itemm}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{width: '20%'}}>
-              <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-                Total:
-              </Text>
-            </View>
-            <View style={{width: '79%'}}>
-              <Text
-                style={styles.title2}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                Rs. {totalll.toFixed()}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{width: '20%'}}>
-              <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-                Date:
-              </Text>
-            </View>
-            <View style={{width: '79%'}}>
-              <Text
-                style={styles.title2}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {formateDateTime(createdAt)}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={{width: '10%', alignItems: 'flex-end'}}>
-          <utils.vectorIcon.AntDesign
-            name="right"
-            color={theme.color.subTitle}
-            size={22}
+            <utils.BookCardDownload
+            data={dt}
+            book={book}
+            nav={props.navigation}
+            screen="downloads"
+            toast={toast}
           />
-        </View>
-      </TouchableOpacity>
     );
   };
 
@@ -216,7 +89,7 @@ function Downloads(props) {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.htitle}>My Orders</Text>
+        <Text style={styles.htitle}>My Downloads</Text>
       </View>
 
       {loader && (
@@ -254,6 +127,7 @@ function Downloads(props) {
           removeClippedSubviews={true}
         />
       )}
+                <Toast ref={toast} position="bottom"/>
     </SafeAreaView>
   );
 }

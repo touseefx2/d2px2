@@ -36,6 +36,7 @@ function Book(props) {
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
   const user = store.User.user;
+  let dLoader = store.Downloads.loader2;
   const toast = useRef(null);
   const toastduration = 700;
   const rbSheet = useRef(null);
@@ -47,7 +48,7 @@ function Book(props) {
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
   let aboutAuthor = d.writer.author_biography || '';
-  let screen = props.screen || '';
+  let screen = props.route.params.screen || "";
 
   let name = d.book_title || '';
   let writerName = authorName || 'Gabrielle Zevin';
@@ -65,10 +66,16 @@ function Book(props) {
     props.navigation.goBack();
   };
 
+  const goHome = () => {
+    props.navigation.navigate('Home');
+  };
+
+
   const DownloadNow = () => {
     NetInfo.fetch().then(state => {
       if (state.isConnected) {
         if (user) {
+          store.Downloads.DownloadBook(d,goHome)
           return;
         }
         rbSheet?.current?.open();
@@ -305,7 +312,7 @@ function Book(props) {
     <SafeAreaView style={styles.container}>
       {renderBottomSheet()}
       <View>{renderCoverImage()}</View>
-
+      <utils.Loader text={'Downloading Book...'} load={dLoader} />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.icon}

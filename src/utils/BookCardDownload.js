@@ -20,17 +20,21 @@ import NetInfo from '@react-native-community/netinfo';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import StarRating from 'react-native-star-rating';
 
-export default observer(BookCard);
-function BookCard(props) {
+export default observer(BookCardDownload);
+function BookCardDownload(props) {
   const toast = props.toast || null;
-  const d = props.data;
+
+  
+  const dt=props.data
+  const d = props.book;
+  console.log("dt : ",dt)
+  console.log("book : ",d)
+  let screen = props.screen || '';
   let pid = d._id;
   let nav = props.nav;
-
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
   let aboutAuthor = d.writer.author_biography || '';
-  let screen = props.screen || '';
 
   let name = d.book_title || '';
   let writerName = authorName || 'Gabrielle Zevin';
@@ -41,34 +45,33 @@ function BookCard(props) {
     : require('../assets/images/burger/img.jpeg');
   let imgLoader = require('../assets/images/imgLoader/img.gif');
 
-  const sep = () => {
-    return (
-      <View
-        style={{
-          width: '100%',
-          alignSelf: 'center',
-          height: 1.5,
-          backgroundColor: theme.color.subTitle,
-          top: 13,
-          opacity: 0.1,
-        }}
-      />
-    );
-  };
+  const gotoReadBook=()=>{
+    NetInfo.fetch().then(statee => {
+      if (statee.isConnected) {
+        
+
+        nav.navigate("Pdf",{dt:dt,d:d,screen:screen})
+      } else {
+        toast?.current?.show('Please connect internet',800);
+      }
+    });
+   
+  }
 
   return (
     <>
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => {
-          nav.navigate('Book', {data: d,screen:screen});
-        }}
+      <View
+      // disabled
+      //   activeOpacity={0.6}
+      //   onPress={() => {
+      //     nav.navigate('Book', {data: d,screen:screen});
+      //   }}
         style={styles.foodCard}>
         <View style={styles.foodCardTxtConatiner}>
           <Text
             style={styles.foodCardTitle1}
-            numberOfLines={2}
-            ellipsizeMode="tail">
+             
+           >
             {name}
           </Text>
 
@@ -86,15 +89,16 @@ function BookCard(props) {
               {category}
               {/* <Text style={styles.foodCardTitle33}>{category}</Text> */}
             </Text>
-            <View style={{width: '45%', marginTop: 5}}>
-              <StarRating
-                starSize={16}
-                disabled={true}
-                maxStars={5}
-                fullStarColor={'#EDAF3A'}
-                rating={rating}
-              />
-            </View>
+            <TouchableOpacity
+            onPress={()=>{
+              gotoReadBook()
+            }}
+            style={{width: 60,height:29,borderRadius:10,backgroundColor:"#d6d6d6",alignItems:"center",justifyContent:"center"}}>
+            <Text
+              style={styles.foodCardTitleb}>
+              READ
+            </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -116,9 +120,9 @@ function BookCard(props) {
             </Text>
           </View>
         )} */}
-      </TouchableOpacity>
-
-      {sep()}
+ 
+      </View>
+ 
     </>
   );
 }
@@ -130,7 +134,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 25,
-    height: 110,
+   
+    elevation:5,
+    padding:5,
+    borderRadius:5
     // backgroundColor: 'red',
   },
 
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
   },
   foodCardImgConatiner: {
     width: '40%',
-    height: '100%',
+    height: 110,
     // backgroundColor: 'yellow',
     justifyContent: 'center',
     alignItems: 'flex-end',
@@ -194,14 +201,19 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   fcBottom: {
-    position: 'absolute',
-    bottom: 0,
+    
+    marginTop:10, 
     width: '100%',
     // backgroundColor: 'red',
     // alignItems: 'center',
     // justifyContent: 'center',
   },
-
+  foodCardTitleb: {
+    fontSize: 12,
+    fontFamily: theme.fonts.fontNormal,
+    color: theme.color.title,
+     
+  },
   addcart: {
     width: '60%',
     height: 32,

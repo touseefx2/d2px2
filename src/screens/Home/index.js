@@ -39,6 +39,7 @@ function Home(props) {
   let internet = store.General.isInternet;
   let tagLine = '';
 
+ 
   let coverImage = require('../../assets/images/homeCover/img.jpg');
   const rbSheet = useRef(null);
   const rbSheet2 = useRef(null);
@@ -54,7 +55,7 @@ function Home(props) {
   const controlPointX = windowWidth / 2.0;
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
-
+  
   const [data, setData] = useState([
     {title: 'Adver Book', key: 'item1', data: []},
     // {title: 'Downloads', key: 'item2', data: []},
