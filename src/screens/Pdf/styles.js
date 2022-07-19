@@ -8,8 +8,7 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-  
+    backgroundColor:theme.color.background
 },
 pdf: {
     flex:1,
@@ -170,14 +169,15 @@ pdf: {
     justifyContent: 'space-between',
   },
   foodCardImg: {
-    width: '40%',
-    height: '100%',
-    elevation: 5,
-    backgroundColor: 'white',
-    borderTopLeftRadius: 7,
-    borderBottomLeftRadius: 7,
-    // marginBottom: 20,
-    // justifyContent: 'center',
+    height:theme.window.Height,
+      width:theme.window.Width-20,
+      borderRadius:10,
+      alignSelf:"center"
+  },
+  ImageLoader: {
+    height:100,
+    width: 100,
+    resizeMode: 'contain',
   },
   foodCardTitle1: {
     fontSize: 18,

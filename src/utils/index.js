@@ -7,7 +7,7 @@ import BookCardDownload from './BookCardDownload';
 import Loader from './Loader';
 // import FoodVariationModal from './FoodVariationModal';
 import FilterModal from './FilterModal';
-// import FoodVariationDetailModal from './FoodVariationDetailModal';
+  import CheckExtensionType from './CheckExtensionType';
 
 // import OtpModal from './OtpModal';
 // import BotomModal from './BottomModal/index';
@@ -37,7 +37,8 @@ const utils = {
   BookCard,
   Loader,
   FilterModal,
-  BookCardDownload
+  BookCardDownload,
+  CheckExtensionType
   // FooterCart,
   // FoodVariationModal,
   // FoodVariationDetailModal,

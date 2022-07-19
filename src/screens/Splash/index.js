@@ -47,7 +47,32 @@ export default observer(Splash);
 function Splash(props) {
   useEffect(() => {
     HydarteStore();
+    setDefaultAd();
+    
   }, []);
+
+  const setDefaultAd=()=>{
+    let ar=[];
+    const obj={
+        repeat_time:15,
+        time:30,    
+     ad:{
+             ad_file:
+     
+               "https://image-assets-bucket.s3.ap-south-1.amazonaws.com/holiday_vacation_resort_resort_640-1653386240914.mp4",
+     
+             createdBy: null,
+     
+             redirect_url: "www.eksplode.com",
+     
+             ad_price: 0,
+    
+         }
+    }
+    ar.push(obj)
+    
+    store.Downloads.setdefaultAd(ar)
+  }
 
   const HydarteStore = async () => {
     await hydrateStores();

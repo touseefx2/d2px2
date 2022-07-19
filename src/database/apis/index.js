@@ -1,7 +1,7 @@
 //online link  ec2
 // const BASE_URL = 'http://ec2-13-126-235-46.ap-south-1.compute.amazonaws.com/';
 //local link
-const BASE_URL = 'http://10.7.149.172:9000/';
+const BASE_URL = 'http://10.7.149.234:9000/';
 
 //apis
 

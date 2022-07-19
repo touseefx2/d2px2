@@ -20,6 +20,19 @@ class downloads {
   @observable loader2 = false;
 
   @persist('object') @observable data = [];
+  @persist('object') @observable pList = [];
+
+  @persist('array') @observable defaultAd = [];
+
+
+  @action setpList = obj => {
+    this.pList = obj;
+  };
+
+  @action setdefaultAd = obj => {
+    this.defaultAd = obj;
+  };
+
 
   @action setloader = obj => {
     this.loader = obj;

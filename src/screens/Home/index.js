@@ -117,8 +117,7 @@ function Home(props) {
   // console.log('data : ', data);
   // console.log('category: ', category);
   // console.log('selectedTab : ', selectedTab);
-  // console.log('filter : ', filter);
-
+ 
   const renderTab = e => {
     let d = e;
 

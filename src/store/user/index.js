@@ -696,6 +696,7 @@ class user {
     // this.setfvrtList([]);
     // this.setadrsList([]);
     store.Downloads.setdata([]);
+    store.Downloads.setpList([])
     this.setisGetAllDatainSplash(false);
     // this.setcart({totalbill: 0, totalitems: 0, data: []});
     goHome();
