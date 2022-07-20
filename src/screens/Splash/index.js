@@ -16,17 +16,7 @@ import messaging from '@react-native-firebase/messaging';
 import {create} from 'mobx-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const hydrateStores = async () => {
-  const hydrate = create({storage: AsyncStorage});
-  await hydrate('General', store.General);
-  await hydrate('User', store.User);
-  await hydrate('Downloads', store.Downloads);
-  // await hydrate('Book', store.Food);
 
-  // await hydrate('Promos', store.Promos);
-  // await hydrate("citystore", store.cityStore);
-  // await hydrate("notificationmanager", store.NotificationManager);
-};
 
 const getToken = async () => {
   let tok = await messaging().getToken();
@@ -48,7 +38,7 @@ function Splash(props) {
   useEffect(() => {
     HydarteStore();
     setDefaultAd();
-    
+   
   }, []);
 
   const setDefaultAd=()=>{
@@ -73,6 +63,18 @@ function Splash(props) {
     
     store.Downloads.setdefaultAd(ar)
   }
+
+  const hydrateStores = async () => {
+    const hydrate = create({storage: AsyncStorage});
+    await hydrate('General', store.General);
+    await hydrate('User', store.User);
+    await hydrate('Downloads', store.Downloads);
+    // await hydrate('Book', store.Food);
+  
+    // await hydrate('Promos', store.Promos);
+    // await hydrate("citystore", store.cityStore);
+    // await hydrate("notificationmanager", store.NotificationManager);
+  };
 
   const HydarteStore = async () => {
     await hydrateStores();

@@ -108,7 +108,7 @@ function Downloads(props) {
           />
           <Text style={styles.emptyText}>Sorry!</Text>
           <Text style={[styles.emptyText, {marginTop: -5}]}>
-            Currently no orders are available here
+            Currently no books are available here
           </Text>
         </View>
       )}

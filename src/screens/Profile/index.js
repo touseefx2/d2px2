@@ -237,7 +237,7 @@ function Profile(props) {
             city: city,
             state: state,
             country: country.name,
-            operation: ['edit'],
+            operation: 'edit',
           },
         };
 
@@ -281,6 +281,7 @@ function Profile(props) {
 
     if (c == 'country') {
       data = countryList;
+     
     } else if (c == 'state') {
       data = stateList;
     } else if (c == 'city') {
@@ -291,6 +292,7 @@ function Profile(props) {
 
       if (c == 'country') {
         setcountry(d);
+        setstate("")
       } else if (c == 'state') {
         setstate(d);
       } else if (c == 'city') {

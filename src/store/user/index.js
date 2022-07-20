@@ -173,6 +173,13 @@ class user {
     return;
   }
 
+  setUser(user) {
+
+    this.user= user;
+    return;
+  }
+
+
   @action.bound
   addauthToken(n) {
     this.authToken = n;
@@ -558,13 +565,13 @@ class user {
   }
 
   @action.bound
-  updateUser(body, funCal) {
+  updateUser(body, funCall) {
     console.log('update user body : ', body);
     console.log('auth token : ', this.authToken);
-    console.log('api cal : ', db.apis.UPDATE_USER + this.user.user._id);
+    console.log('api cal : ', db.apis.UPDATE_USER + this.user._id);
     this.setregLoader(true);
     db.hitApi(
-      db.apis.UPDATE_USER + this.user.user._id,
+      db.apis.UPDATE_USER + this.user._id,
       'put',
       body,
       this.authToken,
@@ -572,21 +579,22 @@ class user {
       ?.then(resp => {
         this.setregLoader(false);
         console.log(`response  ${db.apis.UPDATE_USER} : `, resp.data);
-        // let data = resp.data.data;
+          let data = resp.data.data;
         // let token = resp.data.token;
-        // this.addUser(token, data);
-        // funCal();
+          this.setUser(data)
+         funCall();
       })
       .catch(err => {
         this.setregLoader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.UPDATE_USER} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg.toString());
-      });
+        console.log(`Error in ${db.apis.UPDATE_USER} : `,err);
+      //   let msg = err.response.data.message || err.response.status;
+      //   console.log(`Error in ${db.apis.UPDATE_USER} : `, msg);
+      //   if (msg == 503 || msg == 500) {
+      //     store.General.setisServerError(true);
+      //     return;
+      //   }
+      //   Alert.alert('', msg.toString());
+       });
   }
 
   @action.bound

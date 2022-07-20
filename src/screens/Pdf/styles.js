@@ -174,6 +174,13 @@ pdf: {
       borderRadius:10,
       alignSelf:"center"
   },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   ImageLoader: {
     height:100,
     width: 100,

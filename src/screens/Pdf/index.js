@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   BackHandler,
   TextInput,
+  Image,
   Keyboard,
+  Linking,
+  Alert,
  Modal as MModal
 } from 'react-native';
 import {styles} from './styles';
@@ -14,34 +17,35 @@ import {inject, observer} from 'mobx-react';
 import store from '../../store/index';
 import utils from '../../utils/index';
 import theme from '../../theme';
-import DynamicTabView from 'react-native-dynamic-tab-view';
-import {ActivityIndicator} from 'react-native-paper';
+import NetInfo from '@react-native-community/netinfo';
 import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import moment from 'moment';
+ 
 import Pdf from 'react-native-pdf';
 import Modal from "react-native-modal";
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
-import ProgressiveFastImage from '@freakycoder/react-native-progressive-fast-image';
-// import { TextInput } from 'react-native-paper';
 import FastImage from 'react-native-fast-image'
-
+import VideoPlayer from 'react-native-video-player';
 
 export default observer(PDF);
 function PDF(props) {
   const rpdf = useRef(null);
+  const player = useRef(null);
   let internet = store.General.isInternet;
   let dt = props.route.params.dt;//data
   let d = props.route.params.d;//books
   let ads=dt.ads || []
-  // let slot= ["10","12","13","15","17","19","22"]
-   let slot=d.ad_slots || []
+   let slot= ["10","12","14","15","17","19","22"]
+  //  let slot=d.ad_slots || []
   let dadO=store.Downloads.defaultAd
-  let adTime=5
-  // let adTime=dadO.length>0?dadO[0].time:20
-  let repeatTime=dadO.length>0?dadO[0].repeat_time:30
+   
+  let adTime=3
+  dadO.length>0?dadO[0].time:20
+  let repeatTime=
+  5
+  // dadO.length>0?dadO[0].repeat_time:30
 
   let dad=dadO.length>0?dadO[0].ad:[]
 
@@ -58,12 +62,17 @@ function PDF(props) {
   const [dp, setdp] = useState("");
   const [isV, setisV] = useState(false);
 
+  const [adLoad, setadLoad] = useState(false);
   const [adType, setadType] = useState(false);
   const [adData, setadData] = useState(false);
+ 
   const [isShowAd, setisShowAd] = useState(false);
-  
+  const [adcp, setadcp] = useState(0);
+  const [adcpOne, setadcpOne] = useState(false);
+  let imgLoader = require('../../assets/images/imgLoader/img.gif');
+
   let name = d.book_title || '';
-  let pL=store.Downloads.pList
+  let pL=store.Downloads.pList || []
  
   // console.log('dt : ', dt);
   // console.log('book : ', d);
@@ -74,45 +83,76 @@ function PDF(props) {
   // console.log('dad : ', dad);
   // console.log('adtime : ', adTime);
   console.log('addata : ', adData);
-
+    console.log('pL : ', pL);
+ 
 
   useEffect(()=>{
 if(isShowAd){
-  console.log("yesssasasasasas")
+  NetInfo.fetch().then(state => {
+    if (state.isConnected) {
+    //  store.Downloads.adSentAmount(adData);
+    }
+  });
+}else{
+  setadLoad(false);
+ 
 }
-  },[isShowAd])
+  },[isShowAd,adData])
 
+
+
+  useEffect(()=>{
+if(adcpOne==true && adcp>0  && !isShowAd){
+  if(adcp!=cp){
+    clearInterval(interval)
+    setadcpOne(false);setadcp(0)
+  return
+  }
+
+  const interval = setInterval(() => {
+    setisShowAd(true)
+  }, repeatTime*1000);
+
+  return () => clearInterval(interval);
+ 
+}
+  },[adcpOne,adcp,cp,isShowAd])
  
   useEffect(()=>{
-  if(slot.length>0){
+  
+      if(slot.length>0){
  
-    const index =  slot.indexOf(cp.toString());
-    if(index>-1){
-
-      
-      if(ads.length>0){
-       let obj=ads[index]
-       if(obj){
-        const ext =  obj.ad_file.split(".").slice(-1)[0]
-        let extType=  utils.CheckExtensionType(ext)   
-        if(extType!=""){
-          setadType(extType)
-        setadData(obj)
-         setisShowAd(true)  
-        }else{
-          console.warn("ad url extnsn not found : ",extType)
+        const index =  slot.indexOf(cp.toString());
+        if(index>-1){
+    
+          
+          if(ads.length>0){
+           let obj=ads[index]
+           if(obj){
+            const ext =  obj.ad_file.split(".").slice(-1)[0]
+            let extType=  utils.CheckExtensionType(ext)   
+            if(extType!=""){
+            setadType(extType)
+            setadData(obj)
+             setisShowAd(true)  
+             setadcpOne(true)
+             setadcp(cp)
+            }else{
+              console.warn("ad url extnsn not found : ",extType)
+            }
+          
+           }
+         
+           
+          }else{
+    // alert("show dflt ad")
+          }
+          
         }
-      
-       }
-     
-       
-      }else{
-// alert("show dflt ad")
       }
-      
-    }
-  }
-  },[cp,ads,slot])
+  
+  
+  },[cp,ads])
   
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
@@ -131,7 +171,7 @@ if(isShowAd){
 
   function handleBackButtonClick() {
     setPageBck();  
-   
+    goBack();
     return true;
   }
 
@@ -158,7 +198,7 @@ if(isShowAd){
               ar.push(obj);
               store.Downloads.setpList(ar)
             }   
-            goBack();
+            
   }
 
   useEffect(()=>{
@@ -217,6 +257,23 @@ if(load){
     rpdf?.current?.setPage(parseInt(dp));
 
   };
+
+  const redirecturl=async (url)=>{
+    if(adLoad){
+      console.log("redirect url : ",url)
+      const supported = await Linking.canOpenURL(url);
+  
+      if (supported) {
+        // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+        // by some browser in the mobile
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+
+    }
+  
+  }
 
   const closeDirectPageModa=()=>{
     setisV(false);setdp("");Keyboard.dismiss()
@@ -307,10 +364,12 @@ onBackButtonPress={()=>{closeDirectPageModa()}} isVisible={isV}>
     return(
       <>
            <Pdf
+            enablePaging={true}
+          // enableRTL={true}
       ref={rpdf}
       trustAllCerts={false}
-      source={source}
-
+      source={source} 
+   
       onLoadComplete={(numberOfPages, filePath) => {
         console.log(`Number of pages: ${numberOfPages}`);
         setload(true);
@@ -328,6 +387,7 @@ onBackButtonPress={()=>{closeDirectPageModa()}} isVisible={isV}>
       onPressLink={uri => {
         console.log(`Link pressed: ${uri}`);
       }}
+  
       style={styles.pdf}
     />
         {DirectPageModal()} 
@@ -336,27 +396,29 @@ onBackButtonPress={()=>{closeDirectPageModa()}} isVisible={isV}>
  
     )
   }
-  let imgLoader = require('../../assets/images/imgLoader/img.gif');
 
 
   const renderAdShow=()=>{
-
+let styleee=adType=="image"?{ flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0,0,0,0.8)'}:{ flex: 1,
+    padding:10,
+    backgroundColor: 'rgba(0,0,0,0.8)'}
 
 return(
   <>
    <MModal animationType="fade"  transparent={true} visible={isShowAd}>
    <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0,0,0,0.7)'
-        }}>
+        style={styleee}>
        
+
 {adType=="image" &&(
   <>
       <View style={{flex: 1,alignItems:"center",justifyContent:"center"}}>
+     <TouchableOpacity activeOpacity={0.9} onPress={()=>redirecturl(adData.redirect_url)} >
       <FastImage
+      onLoad={()=>{setadLoad(true)}}
         style={styles.foodCardImg}
         source={{
             uri: adData.ad_file,
@@ -364,15 +426,12 @@ return(
         }}
         resizeMode={FastImage.resizeMode.contain}
     />
-          {/* <ProgressiveFastImage
-            source={{uri:adData.ad_file}}
-            style={styles.foodCardImg}
-            loadingSource={imgLoader}
-            loadingImageStyle={styles.ImageLoader}
-          /> */}
-
+         {!adLoad&&(
+          <Image source={imgLoader} style={{height:40,width:40,position:"absolute",alignSelf:"center",top:"45%"}} />
+         )}
+</TouchableOpacity>
         </View>
-
+{adLoad&&(
  <View style={{backgroundColor:"black",borderRadius:36/2,position:"absolute",top:15,right:10}}>
  <CountdownCircleTimer
     size={36}
@@ -386,11 +445,36 @@ return(
     {({ remainingTime }) => <Text style={{color:"white",fontSize:14,fontFamily:theme.fonts.fontNormal}}>{remainingTime}</Text>}
   </CountdownCircleTimer>
  </View>
+)}
+
   </>
 )}
 
 {adType=="video" &&(
   <>
+      <View style={{flex: 1 }}>
+     <TouchableOpacity activeOpacity={0.9} onPress={()=>redirecturl(adData.redirect_url)} >
+     
+     <VideoPlayer
+    onError={(e)=>{
+      console.warn("video  load error : ",e );
+      setisShowAd(false)
+    }} 
+    onEnd={()=>setisShowAd(false)}
+    onLoad={()=>setadLoad(true)}
+    fullscreen
+    showDuration={true}
+    disableSeek
+    disableControlsAutoHide
+    autoplay
+    video={{ uri: adData.ad_file }}
+    videoWidth={theme.window.Width}
+    videoHeight={theme.window.Height-200}/>
+         {!adLoad&&(
+          <Image source={imgLoader} style={{height:40,width:40,position:"absolute",alignSelf:"center",top:"45%"}} />
+         )}
+</TouchableOpacity>
+        </View>
   
   </>
 )}
@@ -411,6 +495,9 @@ return(
     <>
      
     <SafeAreaView style={styles.container}>
+    
+ 
+
       <View style={styles.header}>
         <View style={styles.back}>
           <TouchableOpacity activeOpacity={0.6} onPress={goBack}>
@@ -427,6 +514,7 @@ return(
           </Text>
         </View>
       </View>
+
       {!internet && <utils.InternetMessage />}
       {renderPdf()} 
       {!internet&& renerInt()}

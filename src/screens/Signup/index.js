@@ -333,6 +333,7 @@ function Signup(props) {
 
       if (c == 'country') {
         setcountry(d);
+        setstate("")
       } else if (c == 'state') {
         setstate(d);
       } else if (c == 'city') {

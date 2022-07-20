@@ -74,6 +74,8 @@ function Home(props) {
   const adverBooks = store.User.adverBooks;
   const bookCat = store.User.bookCat;
 
+  console.log("pl : ",store.Downloads.pList)
+
   useEffect(() => {
     if (adverBooks.length > 0) {
       let dd = data.slice();

@@ -22,7 +22,7 @@ class downloads {
   @persist('object') @observable data = [];
   @persist('object') @observable pList = [];
 
-  @persist('array') @observable defaultAd = [];
+  @persist('object') @observable defaultAd = [];
 
 
   @action setpList = obj => {
@@ -106,6 +106,34 @@ console.log("body : ",body)
         }
 
         Alert.alert('', msg.toString());
+      });
+  }
+
+  @action.bound
+ adSentAmount(data) {
+   
+  let did=""
+const body={ downloadId:did, ad:data }
+    
+console.log(db.apis.AD_SENT_AMOUNT)
+console.log("body : ",body)
+    db.hitApi(db.apis.AD_SENT_AMOUNT+did, 'post', body, store.User.authToken)
+      ?.then((resp: any) => {
+        
+        console.log(`response  ${db.apis.AD_SENT_AMOUNT} : `, resp.data);
+       
+      })
+      .catch(err => {
+         
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.AD_SENT_AMOUNT} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+
+        console.warn("err : ",msg.toString())
+        // Alert.alert('', msg.toString());
       });
   }
 }
