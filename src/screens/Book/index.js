@@ -70,12 +70,16 @@ function Book(props) {
     props.navigation.navigate('Home');
   };
 
+  const showToast = () => {
+    toast?.current?.show("Download success!", 1200);
+  };
+
 
   const DownloadNow = () => {
     NetInfo.fetch().then(state => {
       if (state.isConnected) {
         if (user) {
-          store.Downloads.DownloadBook(d,goHome)
+          store.Downloads.DownloadBook(d,showToast)
           return;
         }
         rbSheet?.current?.open();

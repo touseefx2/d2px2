@@ -24,13 +24,14 @@ export default observer(BookCardDownload);
 function BookCardDownload(props) {
   const toast = props.toast || null;
 
-  
-  const dt=props.data
-  const d = props.book;
-  console.log("dt : ",dt)
-  console.log("book : ",d)
+
+  const dt=props.data || []
+  const d = props.book || [];
+  let expire  = dt.expired || false
+  // console.log("dt : ",dt)
+  // console.log("book : ",d)
   let screen = props.screen || '';
-  let pid = d._id;
+ 
   let nav = props.nav;
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
@@ -44,6 +45,7 @@ function BookCardDownload(props) {
     ? {uri: d.book_cover}
     : require('../assets/images/burger/img.jpeg');
   let imgLoader = require('../assets/images/imgLoader/img.gif');
+  const all=props.all || []
 
   const gotoReadBook=()=>{
     NetInfo.fetch().then(statee => {
@@ -58,14 +60,19 @@ function BookCardDownload(props) {
    
   }
 
+
+ 
+   
+       
+        
+   
+    
+
+ 
   return (
     <>
       <View
-      // disabled
-      //   activeOpacity={0.6}
-      //   onPress={() => {
-      //     nav.navigate('Book', {data: d,screen:screen});
-      //   }}
+     
         style={styles.foodCard}>
         <View style={styles.foodCardTxtConatiner}>
           <Text
@@ -87,18 +94,35 @@ function BookCardDownload(props) {
               numberOfLines={1}
               ellipsizeMode="tail">
               {category}
-              {/* <Text style={styles.foodCardTitle33}>{category}</Text> */}
+    
             </Text>
-            <TouchableOpacity
-            onPress={()=>{
-              gotoReadBook()
-            }}
-            style={{width: 60,height:29,borderRadius:10,backgroundColor:"#d6d6d6",alignItems:"center",justifyContent:"center"}}>
-            <Text
-              style={styles.foodCardTitleb}>
-              READ
-            </Text>
-            </TouchableOpacity>
+           {!expire&&(
+   <TouchableOpacity
+   onPress={()=>{
+     gotoReadBook()
+   }}
+   style={{width: 60,height:29,borderRadius:10,backgroundColor:"#d6d6d6",alignItems:"center",justifyContent:"center"}}>
+   <Text
+     style={styles.foodCardTitleb}>
+     READ
+   </Text>
+   </TouchableOpacity>
+           )}
+            {expire&&(
+   <View
+   
+   style={{width: "100%"}}>
+   <Text
+     style={[styles.foodCardTitleb,{color:"red"}]}>
+     Expired
+   </Text>
+   <Text
+     style={[styles.foodCardTitleb,{color:"red"}]}>
+    Please download again
+   </Text>
+   </View>
+           )}
+         
           </View>
         </View>
 
@@ -125,6 +149,10 @@ function BookCardDownload(props) {
  
     </>
   );
+ 
+
+   
+ 
 }
 
 const styles = StyleSheet.create({

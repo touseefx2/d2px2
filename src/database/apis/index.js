@@ -3,10 +3,17 @@
 //local link
 const BASE_URL = 'http://192.168.100.18:9000/';
 
+const BASE_URL2="http://ec2-18-206-55-156.compute-1.amazonaws.com/"
+
+
 //apis
+
+const  GET_DEF_AD="defaultAd" //base url 2
+
 
 const GET_ALL_CATEGORY = 'category';
 const GET_ADVERBOOKS = 'adverbook/approved';
+const DOWNLOAD_BOOK="adverbook/download"
 const GET_SLIDER_IMAGES = 'api/settings';
 const GET_FOOD_CATEGORY = 'api/category/getAllCategories?branch=';
 const PLACE_ORDER = 'api/orders';
@@ -28,10 +35,10 @@ const CHECK_PROMO = 'api/promocode/checkCodeValidity';
 const GET_All_PROMOS_BY_ID = 'api/promocode/getActiveCodes?city=';
 const  AD_SENT_AMOUNT="adverbook/deductamount/view/"
 
-const DOWNLOAD_BOOK="adverbook/download" 
 
 export default apis = {
   BASE_URL,
+  BASE_URL2,
   GET_ALL_CATEGORY,
   GET_ADVERBOOKS,
   GET_SLIDER_IMAGES,
@@ -54,7 +61,8 @@ export default apis = {
   CHECK_PROMO,
   GET_All_PROMOS_BY_ID,
   DOWNLOAD_BOOK,
-  AD_SENT_AMOUNT
+  AD_SENT_AMOUNT,
+  GET_DEF_AD
 };
 
 // const login = 'user/loginCaptain';

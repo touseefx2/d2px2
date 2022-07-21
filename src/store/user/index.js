@@ -201,6 +201,7 @@ class user {
         // this.attemptToSubTopic();
         this.getAdverBooks();
         this.getBooksCat();
+        store.Downloads.getDefaultAD();
       }
     });
   };
@@ -700,13 +701,15 @@ class user {
   // @action.bound
   Logout(goHome) {
     this.authToken = '';
-    this.user = false;
+   
     // this.setfvrtList([]);
     // this.setadrsList([]);
     store.Downloads.setdata([]);
     store.Downloads.setpList([])
+    store.Downloads.defaultAd([])
     this.setisGetAllDatainSplash(false);
     // this.setcart({totalbill: 0, totalitems: 0, data: []});
+    this.setUser(false)
     goHome();
   }
 }

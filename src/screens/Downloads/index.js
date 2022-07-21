@@ -22,8 +22,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import moment from 'moment';
 import Toast from 'react-native-easy-toast';
-import { User } from '../../store/user';
-
+ 
 export default observer(Downloads);
 function Downloads(props) {
   let internet = store.General.isInternet;
@@ -31,6 +30,8 @@ function Downloads(props) {
   let loader = store.Downloads.loader;
   const toast= useRef(null)
   const [data, setdata] = useState(false);
+ 
+  console.log("data : ",data)
 
   useEffect(() => {
     if (internet) {
@@ -38,10 +39,78 @@ function Downloads(props) {
     }
   }, [internet]);
 
+
+ 
+
   useEffect(() => {
     if (downloads.length > 0) {
-   
-      setdata(downloads);
+    
+   let dt=downloads.slice();
+
+// let dt=[
+//   {_id:1,n:"q",expired:true,book:{_id:11}},
+//   {_id:2,n:"q",expired:true,book:{_id:33}},
+//   {_id:3,n:"q",expired:true,book:{_id:11}},
+//   {_id:4,n:"q",expired:true,book:{_id:11}},
+//   {_id:5,n:"q",expired:true,book:{_id:22}},
+//   {_id:6,n:"q",expired:false,book:{_id:22}},
+// ]
+
+
+
+const did = dt
+  .map(v => v.book._id)
+  .filter((v, i, vIds) => vIds.indexOf(v) !== i)
+  const uarray   = [...new Set(did)];
+  console.log("dplct id : " ,did)
+  console.log("u arr : " ,uarray)
+  let di=[];
+if(uarray.length>0)
+{
+uarray.map((e,i,a)=>{
+let ad=[e]
+
+  const duplicates =dt
+  .filter(obj => ad.includes(obj.book._id));
+
+  if(duplicates.length>0){
+    console.log("u arr data : " ,duplicates)
+  
+    duplicates.map((e,i,a)=>{
+     if(i<a.length-1){
+         di.push(e._id)
+     }
+    })
+  }
+})
+} 
+console.log("di : " ,di)
+
+let fd=downloads.slice();
+ let dind=[]
+ if(di.length>0){
+  di.map((e,i,a)=>{
+    const index = fd.findIndex(object => {
+      return object._id === e;
+    });
+   if(index>-1){
+    dind.push(index)
+   }
+  })
+ 
+console.log("deleted index : " ,dind)
+
+setdata(downloads);
+ }
+ 
+ let ddd=[]
+if(dind.length>0){
+   ddd = fd.filter(function(value, index) {
+    return dind.indexOf(index) == -1;
+})
+}
+setdata(ddd.length>0 ? ddd : fd)
+      
     } else {
       setdata([]);
     }
@@ -64,17 +133,20 @@ function Downloads(props) {
 
   const dt=e;
   const book=dt.book
-   
+    
     return (
+     
             <utils.BookCardDownload
             data={dt}
             book={book}
             nav={props.navigation}
             screen="downloads"
             toast={toast}
+            all={data}
           />
     );
   };
+
 
   return (
     <SafeAreaView style={styles.container}>

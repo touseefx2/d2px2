@@ -28,27 +28,26 @@ import Modal from "react-native-modal";
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 import FastImage from 'react-native-fast-image'
 import VideoPlayer from 'react-native-video-player';
+import Toast from 'react-native-easy-toast';
+import { asDynamicObservableObject } from 'mobx/dist/internal';
 
 export default observer(PDF);
 function PDF(props) {
+  const toast= useRef(null)
   const rpdf = useRef(null);
   const player = useRef(null);
   let internet = store.General.isInternet;
   let dt = props.route.params.dt;//data
   let d = props.route.params.d;//books
-  let ads=dt.ads || []
-   let slot= ["10","12","14","15","17","19","22"]
-  //  let slot=d.ad_slots || []
+  let ads= dt.ads ||  []
+    
+   let slot=d.ad_slots || []
   let dadO=store.Downloads.defaultAd
    
-  let adTime=3
-  dadO.length>0?dadO[0].time:20
-  let repeatTime=
-  5
-  // dadO.length>0?dadO[0].repeat_time:30
-
-  let dad=dadO.length>0?dadO[0].ad:[]
-
+   let adTime=dadO.ad_time || 20
+  
+  let repeatTime= dadO.repeat_time || 0
+   
   let screen = props.route.params.screen;
 
   const source = {uri: d.pdf_file, cache: true};
@@ -62,6 +61,7 @@ function PDF(props) {
   const [dp, setdp] = useState("");
   const [isV, setisV] = useState(false);
 
+  const [adLoadErr, setadLoadErr] = useState(false);
   const [adLoad, setadLoad] = useState(false);
   const [adType, setadType] = useState(false);
   const [adData, setadData] = useState(false);
@@ -76,28 +76,31 @@ function PDF(props) {
  
   // console.log('dt : ', dt);
   // console.log('book : ', d);
-  console.log('slots : ', slot);
+   console.log('slots : ', slot);
   // console.log('sL : ', slot.length);
-  // console.log('ads : ', ads);
+   console.log('ads : ', ads);
   // console.log('adsL : ', ads.length);
   // console.log('dad : ', dad);
   // console.log('adtime : ', adTime);
-  console.log('addata : ', adData);
-    console.log('pL : ', pL);
+    //  console.log('addata : ', adData);
+  //   console.log('pL : ', pL);
  
-
+ 
   useEffect(()=>{
-if(isShowAd){
+if(isShowAd && adLoad){
   NetInfo.fetch().then(state => {
     if (state.isConnected) {
-    //  store.Downloads.adSentAmount(adData);
+      let dta={...adData};
+      delete dta.ad_time;
+      delete dta.repeat_time;
+     store.Downloads.adSentAmount(dta,dt._id);
     }
   });
 }else{
+  setadLoadErr(false)
   setadLoad(false);
- 
 }
-  },[isShowAd,adData])
+  },[isShowAd,adData,adLoad])
 
 
 
@@ -141,18 +144,33 @@ if(adcpOne==true && adcp>0  && !isShowAd){
               console.warn("ad url extnsn not found : ",extType)
             }
           
-           }
-         
-           
+           }          
           }else{
-    // alert("show dflt ad")
+     //show dflt ad
+
+     let obj=dadO
+     if(obj){
+      const ext =  obj.ad_file.split(".").slice(-1)[0]
+      let extType=  utils.CheckExtensionType(ext)   
+      if(extType!=""){
+      setadType(extType)
+      setadData(obj)
+       setisShowAd(true)  
+       setadcpOne(true)
+       setadcp(cp)
+      }else{
+        console.warn("default ad url extnsn not found : ",extType)
+      }
+    
+     }  
+
           }
           
         }
       }
   
   
-  },[cp,ads])
+  },[cp,ads,slot])
   
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
@@ -268,7 +286,8 @@ if(load){
         // by some browser in the mobile
         await Linking.openURL(url);
       } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`);
+        console.warn("Don't know how to open this URL: ",url)
+        // Alert.alert(`Don't know how to open this URL: ${url}`);
       }
 
     }
@@ -402,7 +421,7 @@ onBackButtonPress={()=>{closeDirectPageModa()}} isVisible={isV}>
 let styleee=adType=="image"?{ flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: 'rgba(0,0,0,0.8)'}:{ flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.7)'}:{ flex: 1,
     padding:10,
     backgroundColor: 'rgba(0,0,0,0.8)'}
 
@@ -418,6 +437,10 @@ return(
       <View style={{flex: 1,alignItems:"center",justifyContent:"center"}}>
      <TouchableOpacity activeOpacity={0.9} onPress={()=>redirecturl(adData.redirect_url)} >
       <FastImage
+       onError={(e)=>{
+        console.warn("video  load error : ",e );
+           setadLoadErr(true); 
+      }} 
       onLoad={()=>{setadLoad(true)}}
         style={styles.foodCardImg}
         source={{
@@ -426,7 +449,7 @@ return(
         }}
         resizeMode={FastImage.resizeMode.contain}
     />
-         {!adLoad&&(
+         {!adLoad  &&(
           <Image source={imgLoader} style={{height:40,width:40,position:"absolute",alignSelf:"center",top:"45%"}} />
          )}
 </TouchableOpacity>
@@ -455,22 +478,28 @@ return(
       <View style={{flex: 1 }}>
      <TouchableOpacity activeOpacity={0.9} onPress={()=>redirecturl(adData.redirect_url)} >
      
+     <View style={{flex:1}}>
      <VideoPlayer
     onError={(e)=>{
       console.warn("video  load error : ",e );
-      setisShowAd(false)
+         setadLoadErr(true); 
     }} 
-    onEnd={()=>setisShowAd(false)}
+    onEnd={()=>{setisShowAd(false)}}
     onLoad={()=>setadLoad(true)}
     fullscreen
     showDuration={true}
     disableSeek
     disableControlsAutoHide
     autoplay
-    video={{ uri: adData.ad_file }}
+    toggleResizeModeOnFullscreen={true}
+    videoHeight={theme.window.Height-200}
     videoWidth={theme.window.Width}
-    videoHeight={theme.window.Height-200}/>
-         {!adLoad&&(
+    video={{ uri:adData.ad_file}}
+    />
+
+     </View>
+     
+         {!adLoad  &&(
           <Image source={imgLoader} style={{height:40,width:40,position:"absolute",alignSelf:"center",top:"45%"}} />
          )}
 </TouchableOpacity>
@@ -480,7 +509,15 @@ return(
 )}
 
 
-
+{adLoadErr  &&(
+  <View style={{width:"100%",padding:10,borderRadius:10,position:"absolute",alignSelf:"center",top:"45%",alignItems:"center",justifyContent:"center",backgroundColor: 'rgba(0,0,0,0.9)'}}>
+<Text style={{fontSize:13,color:"silver",fontFamily:theme.fonts.fontMedium}}>{adType=="video"?"Video":"Image"}  load error !</Text>
+<TouchableOpacity onPress={()=>setisShowAd(false)} style={{marginTop:10}}>
+<Text style={{fontSize:13,color:"white",fontFamily:theme.fonts.fontMedium,textDecorationLine:"underline",textDecorationColor:"white"}}>Close</Text>
+</TouchableOpacity>
+   </View>
+      
+         )}
 
       </View>
    </MModal>
@@ -517,8 +554,9 @@ return(
 
       {!internet && <utils.InternetMessage />}
       {renderPdf()} 
-      {!internet&& renerInt()}
+      {!internet && !isShowAd && renerInt()}
       {isShowAd==true && renderAdShow()}
+  
     </SafeAreaView>
  
        </>

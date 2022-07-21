@@ -46,6 +46,41 @@ class downloads {
     this.data = obj;
   };
 
+
+  @action.bound
+  getDefaultAD() {
+     
+ 
+   
+    db.hitApi2(
+      db.apis.GET_DEF_AD,
+      'get',
+      null,
+      null,
+     
+    )
+      ?.then((resp: any) => {
+        console.log(`response  ${db.apis.GET_DEF_AD} : `, resp.data);
+         let data=resp.data.data[0] || []
+       this.setdefaultAd(data)
+      })
+      .catch(err => {
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${ db.apis.GET_DEF_AD} : `, msg);
+        // if (msg == 503 || msg == 500) {
+        //   store.General.setisServerError(true);
+        //   return;
+        // }
+
+        // if (msg == 'No records found') {
+         
+        //   return;
+        // }
+
+        // Alert.alert('', msg.toString());
+      });
+  }
+
   @action.bound
   getDataById() {
     this.setloader(true);
@@ -110,13 +145,14 @@ console.log("body : ",body)
   }
 
   @action.bound
- adSentAmount(data) {
+ adSentAmount(data,id) {
    
-  let did=""
-const body={ downloadId:did, ad:data }
+  let did=id
+const body={ ad:data }
     
-console.log(db.apis.AD_SENT_AMOUNT)
-console.log("body : ",body)
+ console.log(db.apis.AD_SENT_AMOUNT+did)
+ console.log("body : ",body)
+ 
     db.hitApi(db.apis.AD_SENT_AMOUNT+did, 'post', body, store.User.authToken)
       ?.then((resp: any) => {
         
@@ -125,14 +161,14 @@ console.log("body : ",body)
       })
       .catch(err => {
          
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.AD_SENT_AMOUNT} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
+        // let msg = err.response.data.message || err.response.status;
+          console.log(`Error in ${db.apis.AD_SENT_AMOUNT} : `, err);
+        // if (msg == 503 || msg == 500) {
+        //   store.General.setisServerError(true);
+        //   return;
+        // }
 
-        console.warn("err : ",msg.toString())
+        // console.warn("err : ",msg.toString())
         // Alert.alert('', msg.toString());
       });
   }

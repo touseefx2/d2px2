@@ -267,24 +267,28 @@ function Home(props) {
 
         <View style={styles.headerSection2}>
           <TouchableOpacity
+          disabled
             onPress={gotoSearch}
             activeOpacity={0.5}
-            style={styles.icon}>
-            <utils.vectorIcon.AntDesign
+            style={{width: 30,
+              height: 30,}}>
+            {/* <utils.vectorIcon.AntDesign
               name="search1"
               color={iconColor}
               size={20}
-            />
+            /> */}
           </TouchableOpacity>
           <TouchableOpacity
+          disabled
             onPress={gotoHelp}
             activeOpacity={0.5}
-            style={styles.icon}>
-            <utils.vectorIcon.Feather
+            style={{width: 30,
+              height: 30,}}>
+            {/* <utils.vectorIcon.Feather
               name="help-circle"
               color={iconColor}
               size={20}
-            />
+            /> */}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={gotoSetting}
