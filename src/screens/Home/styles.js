@@ -69,6 +69,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
   },
+
+  emptySECTION33: {
+    top: '65%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+  },
   emptySECTION2: {
     alignSelf: 'center',
     marginTop: '45%',

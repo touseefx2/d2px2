@@ -71,6 +71,8 @@ function Home(props) {
 
   const [filter, setfilter] = useState([]);
 
+  const [load, setload] = useState(false);
+
   const getBooksLoader = store.User.AdverbookLoader;
   const adverBooks = store.User.adverBooks;
   const bookCat = store.User.bookCat;
@@ -97,11 +99,20 @@ function Home(props) {
 
   useEffect(() => {
     if (adverBooks.length > 0) {
+      setload(true);
       let dd = data.slice();
       dd[0].data = adverBooks;
       setData(dd);
     }
   }, [adverBooks]);
+
+  useEffect(() => {
+    if (load) {
+      setTimeout(() => {
+        setload(false);
+      }, 1000);
+    }
+  }, [load]);
 
   useEffect(() => {
     if (bookCat.length > 0) {
@@ -357,6 +368,7 @@ function Home(props) {
           </Text>
         </View>
         {!getBooksLoader &&
+          !load &&
           data[0].data !== 'chk' &&
           data[0].data.length > 0 &&
           renderFilter()}
@@ -526,7 +538,7 @@ function Home(props) {
     let length = numOfSelFilter;
 
     if (
-      (selectedTab == 'Adver Book' && data[0].data.length > 0) ||
+      (selectedTab == 'KleverBook' && data[0].data.length > 0) ||
       (selectedTab == 'Downloads' && data[1].data.length > 0)
     ) {
       return (
@@ -613,6 +625,14 @@ function Home(props) {
     );
   };
 
+  const renderLoaderShow2 = () => {
+    return (
+      <View style={styles.emptySECTION33}>
+        <ActivityIndicator size={40} color={theme.color.button1} />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {isServerError && <utils.ServerRes />}
@@ -627,34 +647,38 @@ function Home(props) {
         {renderTitleSection()}
       </View>
 
-      <View style={{flex: 1}}>
-        <DynamicTabView
-          data={data}
-          search={search}
-          defaultIndex={0}
-          renderTab={renderTab}
-          onChangeTab={onChangeTab}
-          headerTextStyle={{
-            color: theme.color.title,
-            fontFamily: theme.fonts.fontMedium,
-          }}
-          headerBackgroundColor={theme.color.background}
-          headerUnderlayColor={theme.color.button1}
-          containerStyle={{
-            backgroundColor: theme.color.background,
-            overflow: 'hidden',
-          }}
-        />
-        {getBooksLoader && renderLoaderShow()}
-        {!getBooksLoader &&
-          data[0].data !== 'chk' &&
-          data[0].data.length > 0 &&
-          renderSearchBox()}
-        {!getBooksLoader &&
-          data[0].data !== 'chk' &&
-          data[0].data.length <= 0 &&
-          renderEmptyShow()}
-      </View>
+      {load && renderLoaderShow2()}
+
+      {!load && (
+        <View style={{flex: 1}}>
+          <DynamicTabView
+            data={data}
+            search={search}
+            defaultIndex={0}
+            renderTab={renderTab}
+            onChangeTab={onChangeTab}
+            headerTextStyle={{
+              color: theme.color.title,
+              fontFamily: theme.fonts.fontMedium,
+            }}
+            headerBackgroundColor={theme.color.background}
+            headerUnderlayColor={theme.color.button1}
+            containerStyle={{
+              backgroundColor: theme.color.background,
+              overflow: 'hidden',
+            }}
+          />
+          {getBooksLoader && renderLoaderShow()}
+          {!getBooksLoader &&
+            data[0].data !== 'chk' &&
+            data[0].data.length > 0 &&
+            renderSearchBox()}
+          {!getBooksLoader &&
+            data[0].data !== 'chk' &&
+            data[0].data.length <= 0 &&
+            renderEmptyShow()}
+        </View>
+      )}
 
       <Toast ref={toast} position="bottom" />
     </SafeAreaView>
