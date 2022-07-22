@@ -7,7 +7,7 @@ import BookCardDownload from './BookCardDownload';
 import Loader from './Loader';
 // import FoodVariationModal from './FoodVariationModal';
 import FilterModal from './FilterModal';
-  import CheckExtensionType from './CheckExtensionType';
+import CheckExtensionType from './CheckExtensionType';
 
 // import OtpModal from './OtpModal';
 // import BotomModal from './BottomModal/index';
@@ -15,7 +15,7 @@ import FilterModal from './FilterModal';
 // import StatusIndicator from './StatusIndicator';
 // import StatusIndicatorR from './StatusIndicatorR';
 // import StatusIndicator2 from './StatusIndicator2';
-// import ServerRes from './ServerRes';
+import ServerRes from './ServerRes';
 // import TagLine from './TagLine';
 // import TagLineModal from './TagLineModal';
 
@@ -38,7 +38,7 @@ const utils = {
   Loader,
   FilterModal,
   BookCardDownload,
-  CheckExtensionType
+  CheckExtensionType,
   // FooterCart,
   // FoodVariationModal,
   // FoodVariationDetailModal,
@@ -49,7 +49,7 @@ const utils = {
   // OtpModal,
   // BotomModal,
   // BottomModalCheck,
-  // ServerRes,
+  ServerRes,
   // TagLine,
   // TagLineModal,
 };

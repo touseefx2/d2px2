@@ -23,6 +23,7 @@ class user {
   @observable isChkLoginModal = false;
 
   @observable loader = false;
+  @observable fploader = false;
   @observable fvrtloader = false;
   @observable adrsloader = false;
   @observable loginLoader = false;
@@ -124,6 +125,10 @@ class user {
     this.loader = obj;
   };
 
+  @action setfpLoader = obj => {
+    this.fploader = obj;
+  };
+
   @action setonline = obj => {
     this.online = obj;
   };
@@ -174,11 +179,9 @@ class user {
   }
 
   setUser(user) {
-
-    this.user= user;
+    this.user = user;
     return;
   }
-
 
   @action.bound
   addauthToken(n) {
@@ -192,10 +195,7 @@ class user {
         console.log('get all  data  : ', c);
 
         if (c == 'user') {
-          // this.attemptToGetUser();
-          // store.Orders.getOrderById();
-          // this.attemptToGetFavtList();
-          // this.attemptToGetAdressList()
+          this.attemptToGetUser();
         }
 
         // this.attemptToSubTopic();
@@ -259,26 +259,36 @@ class user {
   @action.bound
   attemptToGetUser() {
     db.hitApi(
-      db.apis.GET_USER_BY_ID + this.user._id,
+      db.apis.GET_USER_BY_ID + this.user.user._id,
       'get',
       null,
       this.authToken,
     )
       ?.then((resp: any) => {
         console.log(`response  ${db.apis.GET_USER_BY_ID} : `, resp.data);
-        let u = resp.data.data[0];
-        this.setUser(u);
-        // if (u.isActive) {
-        //   this.setUser(u);
-        // } else {
-        //   alert('block');
-        // }
+        let data = resp.data.data[0] || [];
+
+        if (data.isActive) {
+          let u = {...this.user};
+          u.user[data];
+          this.setUser(u);
+        } else {
+          Alert.alert(
+            '',
+            'Sorry, you account is inactive. Please contact customer support.',
+            [{text: 'OK', onPress: () => this.Logout('')}],
+          );
+        }
       })
       .catch(err => {
-        console.log(
-          `Error in ${db.apis.GET_USER_BY_ID} : `,
-          err.response.data.message,
-        );
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.GET_USER_BY_ID} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+
+        Alert.alert('', msg);
       });
   }
 
@@ -571,31 +581,26 @@ class user {
     console.log('auth token : ', this.authToken);
     console.log('api cal : ', db.apis.UPDATE_USER + this.user._id);
     this.setregLoader(true);
-    db.hitApi(
-      db.apis.UPDATE_USER + this.user._id,
-      'put',
-      body,
-      this.authToken,
-    )
+    db.hitApi(db.apis.UPDATE_USER + this.user._id, 'put', body, this.authToken)
       ?.then(resp => {
         this.setregLoader(false);
         console.log(`response  ${db.apis.UPDATE_USER} : `, resp.data);
-          let data = resp.data.data;
+        let data = resp.data.data;
         // let token = resp.data.token;
-          this.setUser(data)
-         funCall();
+        this.setUser(data);
+        funCall();
       })
       .catch(err => {
         this.setregLoader(false);
-        console.log(`Error in ${db.apis.UPDATE_USER} : `,err);
-      //   let msg = err.response.data.message || err.response.status;
-      //   console.log(`Error in ${db.apis.UPDATE_USER} : `, msg);
-      //   if (msg == 503 || msg == 500) {
-      //     store.General.setisServerError(true);
-      //     return;
-      //   }
-      //   Alert.alert('', msg.toString());
-       });
+        console.log(`Error in ${db.apis.UPDATE_USER} : `, err);
+        //   let msg = err.response.data.message || err.response.status;
+        //   console.log(`Error in ${db.apis.UPDATE_USER} : `, msg);
+        //   if (msg == 503 || msg == 500) {
+        //     store.General.setisServerError(true);
+        //     return;
+        //   }
+        //   Alert.alert('', msg.toString());
+      });
   }
 
   @action.bound
@@ -698,19 +703,44 @@ class user {
       });
   }
 
+  @action.bound
+  forgotPassword(body, suc) {
+    this.setfpLoader(true);
+
+    db.hitApi(db.apis.FORGOT_PASWD, 'put', body, null)
+      ?.then(resp => {
+        this.setfpLoader(false);
+        console.log(`response  ${db.apis.FORGOT_PASWD} : `, resp.data);
+        suc();
+      })
+      .catch(err => {
+        this.setfpLoader(false);
+
+        let msg = err.response.data.message || err.response.status;
+        console.log(`Error in ${db.apis.FORGOT_PASWD} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+        Alert.alert('', msg.toString());
+      });
+  }
+
   // @action.bound
   Logout(goHome) {
     this.authToken = '';
-   
+
     // this.setfvrtList([]);
     // this.setadrsList([]);
     store.Downloads.setdata([]);
-    store.Downloads.setpList([])
-    store.Downloads.defaultAd([])
-    this.setisGetAllDatainSplash(false);
+    store.Downloads.setpList([]);
+    store.Downloads.setdefaultAd([]);
+    // this.setisGetAllDatainSplash(false);
     // this.setcart({totalbill: 0, totalitems: 0, data: []});
-    this.setUser(false)
-    goHome();
+    this.setUser(false);
+    if (goHome != '') {
+      goHome();
+    }
   }
 }
 

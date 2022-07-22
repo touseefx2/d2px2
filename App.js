@@ -1,4 +1,4 @@
- import React, {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {AppState, Alert} from 'react-native';
 import stack from './src/navigation/index';
 import {NavigationContainer} from '@react-navigation/native';
@@ -9,7 +9,6 @@ import screens from './src/screens/index';
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
 import store from './src/store/index';
-import {Provider} from 'mobx-react';
 import {inject, observer} from 'mobx-react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
@@ -48,8 +47,7 @@ function App(props) {
   }, []);
 
   return (
-    // <SafeAreaProvider>
-    <Provider {...store}>
+    <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
           {store.General.Loading && (
@@ -61,7 +59,6 @@ function App(props) {
           )}
         </Stack.Navigator>
       </NavigationContainer>
-    </Provider>
-    // </SafeAreaProvider>
+    </SafeAreaProvider>
   );
 }

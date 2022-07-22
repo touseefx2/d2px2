@@ -30,7 +30,7 @@ function Setting(props) {
 
   let image = user?.image
     ? {uri: user.image}
-    : require('../../assets/images/profile/profileimage.png');
+    : require('../../assets/images/profile/img.png');
 
   const [profileImageLoader, setprofileImageLoader] = useState(false);
   const [showfullimagLoader, setshowfullimagLoader] = useState(false);
@@ -145,8 +145,8 @@ function Setting(props) {
               width: 100,
               height: 100,
               borderRadius: 50,
-              borderWidth: 1,
-              borderColor: theme.color.subTitle,
+              borderWidth: 0.5,
+              borderColor: theme.color.subTitleLight,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
@@ -297,7 +297,7 @@ function Setting(props) {
         </TouchableOpacity>
         {sep()}
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => {
             // props.navigation.navigate('Favourite');
@@ -331,7 +331,7 @@ function Setting(props) {
             size={22}
           />
         </TouchableOpacity>
-        {sep()}
+        {sep()} */}
 
         <View style={styles.section3}>
           <Text

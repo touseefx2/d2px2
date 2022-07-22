@@ -1,37 +1,37 @@
-import React from "react";
-import { Button, TouchableHighlight, Text, FlatList, View } from "react-native";
-import PropTypes from "prop-types";
-import theme from "../../src/theme";
+import React from 'react';
+import {Button, TouchableHighlight, Text, FlatList, View} from 'react-native';
+import PropTypes from 'prop-types';
+import theme from '../../src/theme';
 class DynamicTabViewScrollHeader extends React.Component {
   constructor(props) {
     super(props);
-    
-    this.defaultStyle =  {
+
+    this.defaultStyle = {
       headerStyle: {},
       tabItemText: {
-        color: "white"
+        color: 'white',
       },
       tabItemContainer: {
-        overflow: "hidden",
-        backgroundColor: "#555555",
+        overflow: 'hidden',
+        backgroundColor: '#555555',
         padding: 12,
-        justifyContent: "center",
-        alignItems: "center"
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       highlight: {
-        backgroundColor: "white",
+        backgroundColor: 'white',
         paddingHorizontal: 10,
         paddingVertical: 2,
-        marginTop: 5
+        marginTop: 5,
       },
       noHighlight: {
         paddingHorizontal: 10,
         paddingVertical: 2,
-        marginTop: 5
-      }
+        marginTop: 5,
+      },
     };
     this.state = {
-      selected: this.props.selectedTab
+      selected: this.props.selectedTab,
     };
   }
 
@@ -41,37 +41,39 @@ class DynamicTabViewScrollHeader extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedTab !== this.props.selectedTab) {
-      this.setState({ selected: nextProps.selectedTab });
+      this.setState({selected: nextProps.selectedTab});
     }
   }
 
-  _renderTitle = ({ item, index }) => {
+  _renderTitle = ({item, index}) => {
     let isTabActive = index === this.state.selected;
-    let fontWeight = isTabActive ? "bold" : "normal";
-    
+    let fontWeight = isTabActive ? 'bold' : 'normal';
 
-  //   if(this.props.user==false && item["title"] == "Downloads"){
-  //  return null;
-  //   }
+    //   if(this.props.user==false && item["title"] == "Downloads"){
+    //  return null;
+    //   }
 
     return (
       <TouchableHighlight
         onPress={this._onPressHeader.bind(this, index)}
         style={[
           this.defaultStyle.tabItemContainer,
-          { backgroundColor: this.props.headerBackgroundColor }
+          {backgroundColor: this.props.headerBackgroundColor},
         ]}
-        underlayColor={"#00000033"}
-      >
+        underlayColor={'#00000033'}>
         <View>
           <Text
             style={[
-             
               this.defaultStyle.tabItemText,
-              [this.props.headerTextStyle,{color:isTabActive?theme.color.title:theme.color.subTitle,fontFamily:theme.fonts.fontMedium}]
-            ]}
-          >
-            {item["title"]}
+              [
+                this.props.headerTextStyle,
+                {
+                  color: isTabActive ? theme.color.title : theme.color.subTitle,
+                  fontFamily: theme.fonts.fontMedium,
+                },
+              ],
+            ]}>
+            {item['title']}
           </Text>
           {this._renderHighlight(isTabActive)}
         </View>
@@ -86,7 +88,7 @@ class DynamicTabViewScrollHeader extends React.Component {
           style={[
             this.defaultStyle.highlight,
             this.props.highlightStyle,
-            { backgroundColor: this.props.headerUnderlayColor }
+            {backgroundColor: this.props.headerUnderlayColor},
           ]}
         />
       );
@@ -100,7 +102,7 @@ class DynamicTabViewScrollHeader extends React.Component {
   };
 
   scrollHeader = index => {
-    this.headerView.scrollToIndex({ index, animated: true });
+    this.headerView.scrollToIndex({index, animated: true});
   };
 
   // DynamicdefaultStyle = {
@@ -137,26 +139,23 @@ class DynamicTabViewScrollHeader extends React.Component {
           this.headerView = headerView;
         }}
         bounces={false}
-        
         showsHorizontalScrollIndicator={false}
         data={this.props.data}
         extraData={this.state}
         renderItem={this._renderTitle}
         style={[
           this.defaultStyle.headerStyle,
-          { backgroundColor: this.props.headerBackgroundColor }
+          {backgroundColor: this.props.headerBackgroundColor},
         ]}
       />
     );
   }
 }
 
-
-
 DynamicTabViewScrollHeader.defaultProps = {
   selectedTab: 0,
-  headerBackgroundColor: "#555555",
-  headerUnderlayColor: "#00000033"
+  headerBackgroundColor: '#555555',
+  headerUnderlayColor: '#00000033',
 };
 
 DynamicTabViewScrollHeader.propTypes = {
@@ -166,7 +165,7 @@ DynamicTabViewScrollHeader.propTypes = {
   headerTextStyle: PropTypes.any,
   highlightStyle: PropTypes.any,
   noHighlightStyle: PropTypes.any,
-  headerUnderlayColor: PropTypes.any
+  headerUnderlayColor: PropTypes.any,
 };
 
 export default DynamicTabViewScrollHeader;

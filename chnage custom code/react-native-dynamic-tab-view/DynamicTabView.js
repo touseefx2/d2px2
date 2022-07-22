@@ -1,24 +1,24 @@
-import React from "react";
+import React from 'react';
 import {
   ScrollView,
   View,
   Dimensions,
   FlatList,
   TouchableHighlight,
-  Text
-} from "react-native";
-import DynamicTabViewScrollHeader from "./DynamicTabViewScrollHeader";
-import PropTypes from "prop-types";
+  Text,
+} from 'react-native';
+import DynamicTabViewScrollHeader from './DynamicTabViewScrollHeader';
+import PropTypes from 'prop-types';
 
 class DynamicTabView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       index: this.props.defaultIndex,
-      containerWidth: Dimensions.get("window").width,
+      containerWidth: Dimensions.get('window').width,
       begin_offset: null,
       end_offset: null,
-      user:this.props.user
+      search: '',
     };
     this.defaultStyle = defaultStyle;
   }
@@ -27,7 +27,7 @@ class DynamicTabView extends React.Component {
     //HACK
     let wait = new Promise(resolve => setTimeout(resolve, 100));
     wait.then(() => {
-      this.flatView.scrollToIndex({ index: this.state.index, animated: false });
+      this.flatView.scrollToIndex({index: this.state.index, animated: false});
       this.headerRef.scrollHeader(this.state.index);
     });
   }
@@ -35,30 +35,28 @@ class DynamicTabView extends React.Component {
   getItemLayout = (data, index) => ({
     length: this.state.containerWidth,
     offset: this.state.containerWidth * index,
-    index
+    index,
   });
 
   goToPage = index => {
-
-    this.setState({ index });
-    this.flatView.scrollToIndex({ index });
+    this.setState({index});
+    this.flatView.scrollToIndex({index});
     if (this.props.onChangeTab) {
       this.props.onChangeTab(index);
     }
     this.headerRef.scrollHeader(index);
-   
   };
 
   onScrollBeginDrag = e => {
     var begin_offset = e.nativeEvent.contentOffset.x; //since horizontal scroll view begin
     // console.log(begin_offset);
-    this.setState({ begin_offset });
+    this.setState({begin_offset});
   };
 
   onScrollEndDrag = e => {
     var end_offset = e.nativeEvent.contentOffset.x; // since horizontal scroll view end
     // console.log(end_offset)
-    this.setState({ end_offset });
+    this.setState({end_offset});
   };
 
   // To calculate Page scroll from left->right or right->left
@@ -83,49 +81,54 @@ class DynamicTabView extends React.Component {
   };
 
   _onLayout = e => {
-    const { width } = e.nativeEvent.layout;
-    this.setState({ containerWidth: width });
+    const {width} = e.nativeEvent.layout;
+    this.setState({containerWidth: width});
   };
 
-  _renderTabdata = ({ item, index }) => {
-  
-    return(
+  _renderTabdata = ({item, index}) => {
+    return (
       <View
-      style={[
-        { width: this.state.containerWidth,paddingHorizontal:12},
-        this.defaultStyle.tabContainer,
-        this.props.tabContainerStyle
-      ]}
-    >
-      {this.props.renderTab(item, index)}
-    </View>
-    )
-  }
+        style={[
+          {width: this.state.containerWidth, paddingHorizontal: 12},
+          this.defaultStyle.tabContainer,
+          this.props.tabContainerStyle,
+        ]}>
+        {this.props.renderTab(item, index)}
+      </View>
+    );
+  };
 
-  _renderTab = ({ item, index }) => {
-      // console.log('item :', item);
-    let data=item.data;
-    if(data.length<=0){
-      data=[{name:"empty"}]
+  _renderTab = ({item, index}) => {
+    let search = this.props.search;
+    console.log('search  :', search);
+
+    let data = item.data;
+    let d = [];
+
+    if (data == 'chk') {
+      d = [{name: 'chk'}];
     }
+    if (data != 'chk' && data.length <= 0) {
+      d = [{name: 'empty'}];
+    }
+
+    if (data != 'chk' && data.length > 0 && search == '') {
+      d = data;
+    }
+
+    if (data != 'chk' && data.length > 0 && search != '') {
+      d = data.filter(
+        obj => obj.book_title.toLowerCase()?.indexOf(search.toLowerCase()) > -1,
+      );
+    }
+
     return (
       <FlatList
-      contentContainerStyle={{paddingBottom:30}}
-      scrollEnabled={true}
-      data={data}
-      renderItem={this._renderTabdata}
-    />
-      // <ScrollView showsVerticalScrollIndicator={false}  style={{flex:1}}>
-      // <View
-      //   style={[
-      //     { width: this.state.containerWidth,paddingHorizontal:12 },
-      //     this.defaultStyle.tabContainer,
-      //     this.props.tabContainerStyle
-      //   ]}
-      // >
-      //   {this.props.renderTab(item, index)}
-      // </View>
-      // </ScrollView>
+        contentContainerStyle={{paddingBottom: 30}}
+        scrollEnabled={true}
+        data={d}
+        renderItem={this._renderTabdata}
+      />
     );
   };
 
@@ -135,22 +138,19 @@ class DynamicTabView extends React.Component {
         style={[
           this.defaultStyle.headerContainer,
           this.props.headerContainerStyle,
-          ,{
-
-       shadowColor: '#000',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity:  0.4,
-        shadowRadius: 3,
-        elevation: 5,
-
-          }
-        ]}
-      >
+          ,
+          {
+            shadowColor: '#000',
+            shadowOffset: {width: 1, height: 1},
+            shadowOpacity: 0.4,
+            shadowRadius: 3,
+            elevation: 5,
+          },
+        ]}>
         <DynamicTabViewScrollHeader
           ref={headerRef => {
             this.headerRef = headerRef;
           }}
-          user={this.state.user}
           data={this.props.data}
           goToPage={this.goToPage}
           selectedTab={this.state.index}
@@ -166,12 +166,11 @@ class DynamicTabView extends React.Component {
     return (
       <View
         onLayout={this._onLayout}
-        style={[this.defaultStyle.container, this.props.containerStyle]}
-      >
+        style={[this.defaultStyle.container, this.props.containerStyle]}>
         {this._renderHeader()}
         <FlatList
           {...this.props}
-          style={{marginTop:5}}
+          style={{marginTop: 5}}
           scrollEnabled={true}
           showsHorizontalScrollIndicator={false}
           horizontal
@@ -182,7 +181,7 @@ class DynamicTabView extends React.Component {
           styleCustomization={this.props.styleCustomization}
           renderItem={this._renderTab}
           scrollEventThrottle={10}
-          keyboardDismissMode={"on-drag"}
+          keyboardDismissMode={'on-drag'}
           getItemLayout={this.getItemLayout}
           pagingEnabled={true}
           onMomentumScrollBegin={this._onCalculateIndex}
@@ -196,23 +195,23 @@ class DynamicTabView extends React.Component {
 
 defaultStyle = {
   container: {
-    flex: 1
+    flex: 1,
   },
   headerContainer: {
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
   tabContainer: {
-    flex: 1
+    flex: 1,
   },
   labelStyle: {
-    color: "white"
+    color: 'white',
   },
   indicatorStyle: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginVertical: 1,
     bottom: 4, //indicatorStyle is implemented in absolute in the library
-    height: 4
-  }
+    height: 4,
+  },
 };
 
 DynamicTabView.defaultProps = {
@@ -224,7 +223,7 @@ DynamicTabView.defaultProps = {
   //styles for header
   headerTextStyle: {},
   highlightStyle: {},
-  noHighlightStyle: {}
+  noHighlightStyle: {},
 };
 
 DynamicTabView.propTypes = {

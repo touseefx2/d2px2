@@ -3,15 +3,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  Linking,
   ScrollView,
   TextInput,
-  PermissionsAndroid,
   Dimensions,
   Alert,
   Keyboard,
-  Modal,
   Platform,
   StatusBar,
   KeyboardAvoidingView,
@@ -28,6 +24,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import Toast from 'react-native-easy-toast';
 import NetInfo from '@react-native-community/netinfo';
+import Modal from 'react-native-modal';
 
 export default observer(Login);
 function Login(props) {
@@ -40,6 +37,7 @@ function Login(props) {
   const LONGITUDE_DELTA = LATITUDE_DELTA + width / height;
 
   let loader = store.User.loginLoader;
+  let fploader = store.User.fploader;
   const mobileReg = /^[3]\d{9}$/ || /^[0][3]\d{9}$/;
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
@@ -49,6 +47,9 @@ function Login(props) {
   const [email, setemail] = useState(''); //street adress
   const [pswd, setpswd] = useState('');
   const [spswd, setspswd] = useState(false);
+
+  const [fpModal, setfpModal] = useState(false);
+  const [femail, setfemail] = useState(''); //street adress
 
   const goBack = () => {
     props.navigation.goBack();
@@ -176,6 +177,141 @@ function Login(props) {
     );
   };
 
+  const closeForgotPaswdModal = () => {
+    setfpModal(false);
+    setfemail('');
+    Keyboard.dismiss();
+  };
+
+  const forgotPasSuc = () => {
+    setfpModal(false);
+    toast?.current?.show('Please check your email', toastduration);
+  };
+
+  const sendForgotPaswd = () => {
+    Keyboard.dismiss();
+
+    if (femail == '') {
+      toast?.current?.show('Please enter your email');
+      return;
+    }
+
+    if (femail !== '' && emailReg.test(femail) === false) {
+      Alert.alert('', 'Your email pattern is invalid');
+      return;
+    }
+
+    NetInfo.fetch().then(state => {
+      if (state.isConnected) {
+        const data = {
+          email: email,
+        };
+        store.User.forgotPassword(data, forgotPasSuc);
+        // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
+      } else {
+        Alert.alert('Please connect internet');
+      }
+    });
+  };
+
+  const rednerForgotPaswdModal = () => {
+    return (
+      <Modal
+        backdropOpacity={0.6}
+        animationIn={'slideInUp'}
+        animationOut={'slideOutDown'}
+        onBackButtonPress={() => {
+          closeForgotPaswdModal();
+        }}
+        isVisible={fpModal}>
+        <View
+          style={{
+            width: 300,
+            backgroundColor: 'white',
+            borderRadius: 5,
+            alignSelf: 'center',
+            elevation: 3,
+            padding: 20,
+          }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: theme.fonts.fontNormal,
+              color: theme.color.title,
+            }}>
+            Please enter your email
+          </Text>
+
+          <View
+            style={{
+              width: '100%',
+              paddingHorizontal: 20,
+              marginTop: 20,
+            }}>
+            <TextInput
+              placeholderTextColor={theme.color.subTitleLight}
+              style={{
+                backgroundColor: 'white',
+                fontSize: 14,
+                color: theme.color.title,
+                borderBottomColor: theme.color.button1,
+                borderBottomWidth: 1.5,
+              }}
+              placeholder="a@a.com"
+              value={femail}
+              onChangeText={text => {
+                setfemail(text);
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              marginTop: 20,
+              width: '100%',
+              flexDirection: 'row',
+              paddingHorizontal: 20,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <View style={{width: '73%', alignItems: 'flex-end'}}>
+              <TouchableOpacity onPress={closeForgotPaswdModal}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.color.button1,
+                    fontFamily: theme.fonts.fontMedium,
+                  }}>
+                  CANCEL{' '}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                width: '20%',
+                alignItems: 'flex-end',
+              }}>
+              <TouchableOpacity
+                disabled={femail == '' ? true : false}
+                style={{opacity: femail == '' ? 0.6 : 3}}
+                onPress={sendForgotPaswd}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.color.button1,
+                    fontFamily: theme.fonts.fontMedium,
+                  }}>
+                  SEND
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -183,8 +319,8 @@ function Login(props) {
         backgroundColor={theme.color.background}
         barStyle={'dark-content'}
       />
-      <utils.Loader text={'Please wait'} load={loader} />
-
+      <utils.Loader text={'Please wait'} load={loader || fploader} />
+      {rednerForgotPaswdModal()}
       <View style={styles.header}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
           <utils.vectorIcon.Ionicons
@@ -254,8 +390,12 @@ function Login(props) {
             </View>
           </View>
 
-          <View style={{alignItems: 'flex-end'}}>
-            <TouchableOpacity activeOpacity={0.5} onPress={() => {}}>
+          {/* <View style={{alignItems: 'flex-end'}}>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => {
+                setfpModal(true);
+              }}>
               <Text
                 style={{
                   fontSize: 12,
@@ -265,7 +405,7 @@ function Login(props) {
                 Forgot Password?
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </ScrollView>
       </KeyboardAvoidingView>
       {renderBottomButton()}

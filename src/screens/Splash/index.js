@@ -16,8 +16,6 @@ import messaging from '@react-native-firebase/messaging';
 import {create} from 'mobx-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-
 const getToken = async () => {
   let tok = await messaging().getToken();
   console.log('is ios token : ', tok);
@@ -37,18 +35,15 @@ export default observer(Splash);
 function Splash(props) {
   useEffect(() => {
     HydarteStore();
-    
-   
   }, []);
 
-  
   const hydrateStores = async () => {
     const hydrate = create({storage: AsyncStorage});
     await hydrate('General', store.General);
     await hydrate('User', store.User);
     await hydrate('Downloads', store.Downloads);
     // await hydrate('Book', store.Food);
-  
+
     // await hydrate('Promos', store.Promos);
     // await hydrate("citystore", store.cityStore);
     // await hydrate("notificationmanager", store.NotificationManager);

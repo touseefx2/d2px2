@@ -14,6 +14,7 @@ import {
   Platform,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 import {styles} from './styles';
@@ -33,13 +34,13 @@ import Toast from 'react-native-easy-toast';
 import MaskedView from '@react-native-community/masked-view';
 import Svg, {Path} from 'react-native-svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import {TextInput} from 'react-native-paper';
 
 export default observer(Home);
 function Home(props) {
   let internet = store.General.isInternet;
   let tagLine = '';
 
- 
   let coverImage = require('../../assets/images/homeCover/img.jpg');
   const rbSheet = useRef(null);
   const rbSheet2 = useRef(null);
@@ -55,9 +56,9 @@ function Home(props) {
   const controlPointX = windowWidth / 2.0;
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
-  
+  const [search, setsearch] = useState('');
   const [data, setData] = useState([
-    {title: 'Adver Book', key: 'item1', data: []},
+    {title: 'KleverBook', key: 'item1', data: 'chk'},
     // {title: 'Downloads', key: 'item2', data: []},
   ]);
   const [category, setCategory] = useState([]);
@@ -73,14 +74,31 @@ function Home(props) {
   const getBooksLoader = store.User.AdverbookLoader;
   const adverBooks = store.User.adverBooks;
   const bookCat = store.User.bookCat;
+  let getDataOnce = store.User.isGetAllDatainSplash;
+  let isServerError = store.General.isServerError;
 
-  console.log("pl : ",store.Downloads.pList)
+  useEffect(() => {
+    if (!getDataOnce && internet) {
+      NetInfo.fetch().then(state => {
+        if (state.isConnected) {
+          let dd = data.slice();
+          dd[0].data = 'chk';
+          setData(dd);
+          let isLogin = store.User.user !== false ? true : false;
+          if (isLogin) {
+            store.User.getAllData('user');
+          } else {
+            store.User.getAllData('');
+          }
+        }
+      });
+    }
+  }, [internet, getDataOnce]);
 
   useEffect(() => {
     if (adverBooks.length > 0) {
       let dd = data.slice();
       dd[0].data = adverBooks;
-
       setData(dd);
     }
   }, [adverBooks]);
@@ -116,16 +134,10 @@ function Home(props) {
     }
   }, [selectedFilter]);
 
-  // console.log('data : ', data);
-  // console.log('category: ', category);
-  // console.log('selectedTab : ', selectedTab);
- 
   const renderTab = e => {
     let d = e;
 
-    // console.log('e : ', d);
-
-    if (d.name != 'empty') {
+    if (d.name != 'empty' && d.name != 'chk') {
       if (selectedFilter.length <= 0) {
         return (
           <utils.BookCard
@@ -157,23 +169,8 @@ function Home(props) {
               toast={toast}
             />
           );
-        } else {
-          return null;
         }
       }
-    } else {
-      return (
-        <View style={styles.emptySECTION}>
-          <Image
-            style={styles.emptyImg}
-            source={require('../../assets/images/empty/img.png')}
-          />
-          <Text style={styles.emptyText}>Sorry!</Text>
-          <Text style={[styles.emptyText, {marginTop: -3}]}>
-            Currently no books are available here
-          </Text>
-        </View>
-      );
     }
   };
 
@@ -245,7 +242,6 @@ function Home(props) {
     const gotoSetting = () => {
       if (!store.User.user) {
         rbSheet?.current?.open();
-        // props.navigation.navigate('CheckLogin', {screen: 'home'});
         return;
       }
       props.navigation.navigate('Setting');
@@ -267,11 +263,10 @@ function Home(props) {
 
         <View style={styles.headerSection2}>
           <TouchableOpacity
-          disabled
+            disabled
             onPress={gotoSearch}
             activeOpacity={0.5}
-            style={{width: 30,
-              height: 30,}}>
+            style={{width: 30, height: 30}}>
             {/* <utils.vectorIcon.AntDesign
               name="search1"
               color={iconColor}
@@ -279,11 +274,10 @@ function Home(props) {
             /> */}
           </TouchableOpacity>
           <TouchableOpacity
-          disabled
+            disabled
             onPress={gotoHelp}
             activeOpacity={0.5}
-            style={{width: 30,
-              height: 30,}}>
+            style={{width: 30, height: 30}}>
             {/* <utils.vectorIcon.Feather
               name="help-circle"
               color={iconColor}
@@ -297,7 +291,7 @@ function Home(props) {
             <utils.vectorIcon.AntDesign
               name="user"
               color={iconColor}
-              size={20}
+              size={22}
             />
           </TouchableOpacity>
         </View>
@@ -362,8 +356,10 @@ function Home(props) {
             {store.General.AppName}
           </Text>
         </View>
-
-        {renderFilter()}
+        {!getBooksLoader &&
+          data[0].data !== 'chk' &&
+          data[0].data.length > 0 &&
+          renderFilter()}
       </View>
     );
   };
@@ -553,11 +549,75 @@ function Home(props) {
     }
   };
 
+  const renderSearchBox = () => {
+    return (
+      <View
+        style={{
+          width: 170,
+          height: 32,
+          backgroundColor: theme.color.background,
+          // borderBottomWidth: 1,
+          borderWidth: 0,
+          borderColor: theme.color.button1,
+          position: 'absolute',
+          top: 8,
+          right: 12,
+        }}>
+        <TextInput
+          selectionColor={theme.color.button1}
+          underlineColor={'#dbdbdb'}
+          activeUnderlineColor={theme.color.button1}
+          placeholder="Search"
+          placeholderTextColor={'#c4c4c4'}
+          value={search}
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: theme.color.background,
+            paddingLeft: 20,
+            color: theme.color.subTitleLight,
+            // backgroundColor: 'red',
+          }}
+          onChangeText={t => setsearch(t)}
+        />
+        <utils.vectorIcon.Ionicons
+          style={{position: 'absolute', top: 5}}
+          name="search"
+          color={'#c4c4c4'}
+          size={24}
+        />
+      </View>
+    );
+  };
+
+  const renderEmptyShow = () => {
+    return (
+      <View style={styles.emptySECTION}>
+        <Image
+          style={styles.emptyImg}
+          source={require('../../assets/images/empty/img.png')}
+        />
+        <Text style={styles.emptyText}>Sorry!</Text>
+        <Text style={[styles.emptyText, {marginTop: -3}]}>
+          Currently no books are available here
+        </Text>
+      </View>
+    );
+  };
+
+  const renderLoaderShow = () => {
+    return (
+      <View style={styles.emptySECTION}>
+        <ActivityIndicator size={40} color={theme.color.button1} />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {isServerError && <utils.ServerRes />}
       {renderStatusBar()}
       {!internet && <utils.InternetMessage color={theme.color.button1} />}
-
       {/* {tagLine != '' && <utils.TagLine tagLine={tagLine} />} */}
       {renderFilterSheet()}
       {renderBottomSheet()}
@@ -567,72 +627,34 @@ function Home(props) {
         {renderTitleSection()}
       </View>
 
-      {/* <utils.Loader load={loader || load} text={loader ? 'Please wait' : ''} /> */}
-
-      {/* {foodCategory != false && !loadd && foodCategory.length > 0 && (
-        <>
-          <DynamicTabView
-            data={foodCategory}
-            defaultIndex={0}
-            renderTab={renderTab}
-            onChangeTab={onChangeTab}
-            headerTextStyle={{
-              color: theme.color.title,
-              fontFamily: theme.fonts.fontMedium,
-            }}
-            headerBackgroundColor={theme.color.background}
-            headerUnderlayColor={theme.color.button1}
-            containerStyle={{
-              backgroundColor: theme.color.background,
-              paddingBottom: cart.data.length > 0 ? responsiveHeight(10) : 0,
-              overflow: 'hidden',
-            }}
-          />
-        </>
-      )}
-
-      {loadd && (
-        <>
-          <ActivityIndicator
-            size={27}
-            color={theme.color.button1}
-            style={styles.emptySECTION}
-          />
-        </>
-      )}
-
-      {loader == false && foodCategory.length <= 0 && (
-        <View style={styles.emptySECTION2}>
-          <Image
-            style={styles.emptyImg}
-            source={require('../../assets/images/empty/img.png')}
-          />
-          <Text style={styles.emptyText}>Sorry!</Text>
-          <Text style={[styles.emptyText, {marginTop: -5}]}>
-            Currently no products are available here
-          </Text>
-        </View>
-      )}
-
-      {cart.data.length > 0 && <utils.FooterCart nav={props.navigation} />} */}
-
-      <DynamicTabView
-        data={data}
-        user={user ? true : false}
-        defaultIndex={0}
-        renderTab={renderTab}
-        onChangeTab={onChangeTab}
-        headerTextStyle={{
-          color: theme.color.title,
-          fontFamily: theme.fonts.fontMedium,
-        }}
-        headerBackgroundColor={theme.color.background}
-        headerUnderlayColor={theme.color.button1}
-        containerStyle={{
-          backgroundColor: theme.color.background,
-          overflow: 'hidden',
-        }}
-      />
+      <View style={{flex: 1}}>
+        <DynamicTabView
+          data={data}
+          search={search}
+          defaultIndex={0}
+          renderTab={renderTab}
+          onChangeTab={onChangeTab}
+          headerTextStyle={{
+            color: theme.color.title,
+            fontFamily: theme.fonts.fontMedium,
+          }}
+          headerBackgroundColor={theme.color.background}
+          headerUnderlayColor={theme.color.button1}
+          containerStyle={{
+            backgroundColor: theme.color.background,
+            overflow: 'hidden',
+          }}
+        />
+        {getBooksLoader && renderLoaderShow()}
+        {!getBooksLoader &&
+          data[0].data !== 'chk' &&
+          data[0].data.length > 0 &&
+          renderSearchBox()}
+        {!getBooksLoader &&
+          data[0].data !== 'chk' &&
+          data[0].data.length <= 0 &&
+          renderEmptyShow()}
+      </View>
 
       <Toast ref={toast} position="bottom" />
     </SafeAreaView>

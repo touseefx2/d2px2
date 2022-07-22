@@ -1,19 +1,22 @@
 //online link  ec2
 // const BASE_URL = 'http://ec2-13-126-235-46.ap-south-1.compute.amazonaws.com/';
+
 //local link
-const BASE_URL = 'http://192.168.100.18:9000/';
+// const BASE_URL = 'http://192.168.100.18:9000/';
 
-const BASE_URL2="http://ec2-18-206-55-156.compute-1.amazonaws.com/"
+//online link
+const BASE_URL = 'http://ec2-3-80-110-152.compute-1.amazonaws.com/';
 
+//defaultad link
+const BASE_URL2 = 'http://ec2-18-206-55-156.compute-1.amazonaws.com/';
 
 //apis
 
-const  GET_DEF_AD="defaultAd" //base url 2
-
-
+const GET_DEF_AD = 'defaultAd'; //base url 2
+const FORGOT_PASWD = 'user/password/forgot1';
 const GET_ALL_CATEGORY = 'category';
 const GET_ADVERBOOKS = 'adverbook/approved';
-const DOWNLOAD_BOOK="adverbook/download"
+const DOWNLOAD_BOOK = 'adverbook/download';
 const GET_SLIDER_IMAGES = 'api/settings';
 const GET_FOOD_CATEGORY = 'api/category/getAllCategories?branch=';
 const PLACE_ORDER = 'api/orders';
@@ -21,7 +24,7 @@ const REGISTER_USER = 'customer/create';
 const UPDATE_USER = 'customer/';
 const LOGIN_USER = 'user/login';
 const IMAGE_UPLOAD = 'api/upload';
-const GET_USER_BY_ID = 'api/users?_id=';
+const GET_USER_BY_ID = 'user/?_id=';
 const GET_ORDERS_BY_USER_ID = 'adverbook/downloadedbooks?user=';
 const GET_FAVRT_FOOD_LIST_BY_USER_ID = 'api/orders?customer=';
 const GET_ADDRESS_BY_USER_ID = 'api/orders?customer=';
@@ -33,8 +36,7 @@ const CHANGE_PASSWORD = 'user/';
 const SUBSCRIBE_TOPIC = 'api/pushnotification/subscribeToTopic';
 const CHECK_PROMO = 'api/promocode/checkCodeValidity';
 const GET_All_PROMOS_BY_ID = 'api/promocode/getActiveCodes?city=';
-const  AD_SENT_AMOUNT="adverbook/deductamount/view/"
-
+const AD_SENT_AMOUNT = 'adverbook/deductamount/view/';
 
 export default apis = {
   BASE_URL,
@@ -62,7 +64,8 @@ export default apis = {
   GET_All_PROMOS_BY_ID,
   DOWNLOAD_BOOK,
   AD_SENT_AMOUNT,
-  GET_DEF_AD
+  GET_DEF_AD,
+  FORGOT_PASWD,
 };
 
 // const login = 'user/loginCaptain';

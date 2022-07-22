@@ -45,14 +45,16 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   icon: {
-    width: 30,
-    height: 30,
-    borderRadius: 30 / 2,
+    width: 33,
+    height: 33,
+    borderRadius: 33 / 2,
     backgroundColor: theme.color.button1,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 10,
     marginLeft: 10,
+    borderColor: theme.color.background,
+    borderWidth: 1,
   },
   imageGif: {
     width: responsiveWidth(100),
@@ -61,10 +63,11 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   emptySECTION: {
-    marginTop: '50%',
+    top: '45%',
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute',
   },
   emptySECTION2: {
     alignSelf: 'center',
