@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
   },
 
   emptySECTION33: {
-    top: '65%',
+    top: '60%',
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',

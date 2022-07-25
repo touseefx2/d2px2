@@ -8,13 +8,13 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:theme.color.background
-},
-pdf: {
-    flex:1,
+    backgroundColor: theme.color.background,
+  },
+  pdf: {
+    flex: 1,
     width: theme.window.Width,
     height: theme.window.Height,
-},
+  },
   section1: {
     marginTop: '12%',
     alignItems: 'center',
@@ -30,9 +30,8 @@ pdf: {
     fontSize: 16,
     fontFamily: theme.fonts.fontMedium,
     color: theme.color.title,
-     lineHeight:22,
+    lineHeight: 22,
     textTransform: 'capitalize',
-     
   },
   title: {
     fontSize: 12,
@@ -80,7 +79,7 @@ pdf: {
     flexDirection: 'row',
     elevation: 10,
     marginBottom: 2,
-    justifyContent:"space-between"
+    justifyContent: 'space-between',
   },
   back: {},
   titleSection: {
@@ -169,10 +168,10 @@ pdf: {
     justifyContent: 'space-between',
   },
   foodCardImg: {
-    height:theme.window.Height,
-      width:theme.window.Width-20,
-      borderRadius:10,
-      alignSelf:"center"
+    height: theme.window.Height,
+    width: theme.window.Width - 20,
+    borderRadius: 10,
+    alignSelf: 'center',
   },
   backgroundVideo: {
     position: 'absolute',
@@ -182,7 +181,7 @@ pdf: {
     right: 0,
   },
   ImageLoader: {
-    height:100,
+    height: 100,
     width: 100,
     resizeMode: 'contain',
   },
@@ -234,5 +233,40 @@ pdf: {
     alignSelf: 'flex-end',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  time_wrapper: {
+    position: 'relative',
+    width: 80,
+    height: 60,
+  },
+
+  timeTxt: {
+    fontSize: 14,
+    fontFamily: theme.fonts.fontNormal,
+    color: 'white',
+  },
+
+  time_wrapper_time: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{translateY: 0}],
+    opacity: 1,
+    transition: 0.2,
+  },
+
+  time_wrapper_timeUp: {
+    opacity: 0,
+    transform: [{translateY: -'100%'}],
+  },
+  time_wrapper_timeDown: {
+    opacity: 0,
+    transform: [{translateY: '100%'}],
   },
 });

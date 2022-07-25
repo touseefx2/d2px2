@@ -462,38 +462,9 @@ function PDF(props) {
     );
   };
 
-  const renderTime = ({remainingTime}) => (
-    // const currentTime = useRef(remainingTime);
-    // const prevTime = useRef(null);
-    // const isNewTimeFirstTick = useRef(false);
-    // const [, setOneLastRerender] = useState(0);
-
-    // if (currentTime.current !== remainingTime) {
-    //   isNewTimeFirstTick.current = true;
-    //   prevTime.current = currentTime.current;
-    //   currentTime.current = remainingTime;
-    // } else {
-    //   isNewTimeFirstTick.current = false;
-    // }
-
-    // // force one last re-render when the time is over to tirgger the last animation
-    // if (remainingTime === 0) {
-    //   setTimeout(() => {
-    //     setOneLastRerender((val) => val + 1);
-    //   }, 20);
-    // }
-
-    // const isTimeUp = isNewTimeFirstTick.current;
-
-    <Text
-      style={{
-        color: 'white',
-        fontSize: 14,
-        fontFamily: theme.fonts.fontNormal,
-      }}>
-      {remainingTime}
-    </Text>
-  );
+  const renderTime = ({remainingTime}) => {
+    return <Text style={styles.timeTxt}>{remainingTime}</Text>;
+  };
 
   const renderAdShow = () => {
     let styleee =

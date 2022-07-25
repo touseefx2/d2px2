@@ -45,7 +45,7 @@ function BookCard(props) {
     return (
       <View
         style={{
-          width: '100%',
+          width: responsiveWidth(100),
           alignSelf: 'center',
           height: 1.5,
           backgroundColor: theme.color.subTitle,
@@ -61,7 +61,7 @@ function BookCard(props) {
       <TouchableOpacity
         activeOpacity={0.6}
         onPress={() => {
-          nav.navigate('Book', {data: d,screen:screen});
+          nav.navigate('Book', {data: d, screen: screen});
         }}
         style={styles.foodCard}>
         <View style={styles.foodCardTxtConatiner}>

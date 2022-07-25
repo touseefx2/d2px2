@@ -5,14 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
-  TouchableHighlight,
   StatusBar,
-  BackHandler,
-  Alert,
-  Linking,
-  PermissionsAndroid,
-  Platform,
-  Dimensions,
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
@@ -23,12 +16,8 @@ import store from '../../store/index';
 import utils from '../../utils/index';
 import theme from '../../theme';
 import DynamicTabView from 'react-native-dynamic-tab-view';
-import ImageSlider from 'react-native-image-slider';
-import FastImage from 'react-native-fast-image';
-import {
-  responsiveHeight,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+
+import {responsiveHeight} from 'react-native-responsive-dimensions';
 import NetInfo from '@react-native-community/netinfo';
 import Toast from 'react-native-easy-toast';
 import MaskedView from '@react-native-community/masked-view';
@@ -57,23 +46,20 @@ function Home(props) {
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
   const [search, setsearch] = useState('');
-  const [data, setData] = useState([
-    {title: 'KleverBook', key: 'item1', data: 'chk'},
-    // {title: 'Downloads', key: 'item2', data: []},
-  ]);
+  const [data, setData] = useState(false);
   const [category, setCategory] = useState([]);
   const [isCatModalVisible, setisCatModalVisible] = useState(false);
 
-  const [selectedTab, setselectedTab] = useState(data[0].title);
+  const [selectedTab, setselectedTab] = useState('');
 
   const selectedFilter = store.General.selectedFilter;
   const [numOfSelFilter, setnumOfSelFilter] = useState(0);
 
   const [filter, setfilter] = useState([]);
 
+  const getBooksLoader = store.User.AdverbookLoader;
   const [load, setload] = useState(false);
 
-  const getBooksLoader = store.User.AdverbookLoader;
   const adverBooks = store.User.adverBooks;
   const bookCat = store.User.bookCat;
   let getDataOnce = store.User.isGetAllDatainSplash;
@@ -98,21 +84,26 @@ function Home(props) {
   }, [internet, getDataOnce]);
 
   useEffect(() => {
+    setload(true);
     if (adverBooks.length > 0) {
-      setload(true);
-      let dd = data.slice();
-      dd[0].data = adverBooks;
+      let dd = [];
+      dd.push({title: 'KleverBook', key: 'item1', data: adverBooks});
       setData(dd);
+    } else {
+      setData([]);
     }
   }, [adverBooks]);
 
   useEffect(() => {
-    if (load) {
+    if (data !== false) {
       setTimeout(() => {
         setload(false);
       }, 1000);
     }
-  }, [load]);
+    if (data !== false && data.length > 0) {
+      setselectedTab(data[0].title);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (bookCat.length > 0) {
@@ -148,7 +139,7 @@ function Home(props) {
   const renderTab = e => {
     let d = e;
 
-    if (d.name != 'empty' && d.name != 'chk') {
+    if (d.name != 'empty') {
       if (selectedFilter.length <= 0) {
         return (
           <utils.BookCard
@@ -369,8 +360,8 @@ function Home(props) {
         </View>
         {!getBooksLoader &&
           !load &&
-          data[0].data !== 'chk' &&
-          data[0].data.length > 0 &&
+          data !== false &&
+          data.length > 0 &&
           renderFilter()}
       </View>
     );
@@ -538,8 +529,14 @@ function Home(props) {
     let length = numOfSelFilter;
 
     if (
-      (selectedTab == 'KleverBook' && data[0].data.length > 0) ||
-      (selectedTab == 'Downloads' && data[1].data.length > 0)
+      (selectedTab == 'KleverBook' &&
+        data !== false &&
+        data.length > 0 &&
+        data[0]) ||
+      (selectedTab == 'Downloads' &&
+        data != false &&
+        data.length > 0 &&
+        data[1])
     ) {
       return (
         <TouchableOpacity
@@ -602,9 +599,17 @@ function Home(props) {
     );
   };
 
+  const renderLoaderShow = () => {
+    return (
+      <View style={styles.emptySECTION33}>
+        <ActivityIndicator size={40} color={theme.color.button1} />
+      </View>
+    );
+  };
+
   const renderEmptyShow = () => {
     return (
-      <View style={styles.emptySECTION}>
+      <View style={styles.emptySECTION33}>
         <Image
           style={styles.emptyImg}
           source={require('../../assets/images/empty/img.png')}
@@ -613,22 +618,6 @@ function Home(props) {
         <Text style={[styles.emptyText, {marginTop: -3}]}>
           Currently no books are available here
         </Text>
-      </View>
-    );
-  };
-
-  const renderLoaderShow = () => {
-    return (
-      <View style={styles.emptySECTION}>
-        <ActivityIndicator size={40} color={theme.color.button1} />
-      </View>
-    );
-  };
-
-  const renderLoaderShow2 = () => {
-    return (
-      <View style={styles.emptySECTION33}>
-        <ActivityIndicator size={40} color={theme.color.button1} />
       </View>
     );
   };
@@ -647,9 +636,13 @@ function Home(props) {
         {renderTitleSection()}
       </View>
 
-      {load && renderLoaderShow2()}
-
-      {!load && (
+      {getBooksLoader || (load && renderLoaderShow())}
+      {!getBooksLoader &&
+        !load &&
+        data !== false &&
+        data.length <= 0 &&
+        renderEmptyShow()}
+      {!getBooksLoader && !load && data !== false && data.length > 0 && (
         <View style={{flex: 1}}>
           <DynamicTabView
             data={data}
@@ -668,15 +661,8 @@ function Home(props) {
               overflow: 'hidden',
             }}
           />
-          {getBooksLoader && renderLoaderShow()}
-          {!getBooksLoader &&
-            data[0].data !== 'chk' &&
-            data[0].data.length > 0 &&
-            renderSearchBox()}
-          {!getBooksLoader &&
-            data[0].data !== 'chk' &&
-            data[0].data.length <= 0 &&
-            renderEmptyShow()}
+
+          {renderSearchBox()}
         </View>
       )}
 
