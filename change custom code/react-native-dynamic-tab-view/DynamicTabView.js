@@ -105,18 +105,15 @@ class DynamicTabView extends React.Component {
     let data = item.data;
     let d = [];
 
-    if (data == 'chk') {
-      d = [{name: 'chk'}];
-    }
-    if (data != 'chk' && data.length <= 0) {
+    if (data.length <= 0) {
       d = [{name: 'empty'}];
     }
 
-    if (data != 'chk' && data.length > 0 && search == '') {
+    if (data.length > 0 && search == '') {
       d = data;
     }
 
-    if (data != 'chk' && data.length > 0 && search != '') {
+    if (data.length > 0 && search != '') {
       d = data.filter(
         obj => obj.book_title.toLowerCase()?.indexOf(search.toLowerCase()) > -1,
       );
