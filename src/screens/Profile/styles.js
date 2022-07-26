@@ -410,6 +410,9 @@ export const styles = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: theme.color.subTitle,
     paddingHorizontal: 10,
+
+    alignItems: 'center', //for iso
+    justifyContent: 'center', //for ios
   },
   textInputStyle: {
     width: '100%',

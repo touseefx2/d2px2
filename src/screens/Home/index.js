@@ -8,6 +8,7 @@ import {
   StatusBar,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 
 import {styles} from './styles';
@@ -250,6 +251,7 @@ function Home(props) {
     };
 
     const iconColor = 'black';
+
     return (
       <View
         style={[
@@ -257,8 +259,8 @@ function Home(props) {
           {
             marginTop:
               internet && tagLine == ''
-                ? theme.window.STATUSBAR_HEIGHT + 10
-                : 10,
+                ? theme.window.STATUSBAR_HEIGHT + 12
+                : 12,
           },
         ]}>
         <View style={{width: 30}} />
@@ -506,19 +508,29 @@ function Home(props) {
   };
 
   const renderStatusBar = () => {
-    if (internet && tagLine == '') {
-      return (
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle={'light-content'}
-        />
-      );
+    if (Platform.OS == 'android') {
+      if (internet && tagLine == '') {
+        return (
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={'light-content'}
+          />
+        );
+      } else {
+        return (
+          <StatusBar
+            translucent={false}
+            backgroundColor={theme.color.button1}
+            barStyle={'dark-content'}
+          />
+        );
+      }
     } else {
       return (
         <StatusBar
           translucent={false}
-          backgroundColor={theme.color.button1}
+          backgroundColor={'black'}
           barStyle={'dark-content'}
         />
       );

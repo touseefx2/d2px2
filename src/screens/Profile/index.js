@@ -281,7 +281,6 @@ function Profile(props) {
 
     if (c == 'country') {
       data = countryList;
-     
     } else if (c == 'state') {
       data = stateList;
     } else if (c == 'city') {
@@ -292,7 +291,7 @@ function Profile(props) {
 
       if (c == 'country') {
         setcountry(d);
-        setstate("")
+        setstate('');
       } else if (c == 'state') {
         setstate(d);
       } else if (c == 'city') {

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  Platform,
 } from 'react-native';
 import theme from '../theme/index';
 import {
@@ -24,14 +25,13 @@ export default observer(BookCardDownload);
 function BookCardDownload(props) {
   const toast = props.toast || null;
 
-
-  const dt=props.data || []
+  const dt = props.data || [];
   const d = props.book || [];
-  let expire  = dt.expired || false
+  let expire = dt.expired || false;
   // console.log("dt : ",dt)
   // console.log("book : ",d)
   let screen = props.screen || '';
- 
+
   let nav = props.nav;
   let detail = d.book_story || '---';
   let authorName = d.author.name || '';
@@ -45,42 +45,38 @@ function BookCardDownload(props) {
     ? {uri: d.book_cover}
     : require('../assets/images/burger/img.jpeg');
   let imgLoader = require('../assets/images/imgLoader/img.gif');
-  const all=props.all || []
+  const all = props.all || [];
 
-  const gotoReadBook=()=>{
+  const gotoReadBook = () => {
     NetInfo.fetch().then(statee => {
       if (statee.isConnected) {
-        
-
-        nav.navigate("Pdf",{dt:dt,d:d,screen:screen})
+        nav.navigate('Pdf', {dt: dt, d: d, screen: screen});
       } else {
-        toast?.current?.show('Please connect internet',800);
+        toast?.current?.show('Please connect internet', 800);
       }
     });
-   
-  }
+  };
 
+  const sty =
+    Platform.OS == 'android'
+      ? {
+          elevation: 5,
+        }
+      : {
+          shadowColor: '#000',
 
- 
-   
-       
-        
-   
-    
+          shadowOffset: {width: 0, height: 0.5},
 
- 
+          shadowOpacity: 0.6,
+
+          shadowRadius: 1,
+        };
+
   return (
     <>
-      <View
-     
-        style={styles.foodCard}>
+      <View style={[styles.foodCard, sty]}>
         <View style={styles.foodCardTxtConatiner}>
-          <Text
-            style={styles.foodCardTitle1}
-             
-           >
-            {name}
-          </Text>
+          <Text style={styles.foodCardTitle1}>{name}</Text>
 
           <View style={styles.fcBottom}>
             <Text
@@ -94,35 +90,33 @@ function BookCardDownload(props) {
               numberOfLines={1}
               ellipsizeMode="tail">
               {category}
-    
             </Text>
-           {!expire&&(
-   <TouchableOpacity
-   onPress={()=>{
-     gotoReadBook()
-   }}
-   style={{width: 60,height:29,borderRadius:10,backgroundColor:"#d6d6d6",alignItems:"center",justifyContent:"center"}}>
-   <Text
-     style={styles.foodCardTitleb}>
-     READ
-   </Text>
-   </TouchableOpacity>
-           )}
-            {expire&&(
-   <View
-   
-   style={{width: "100%"}}>
-   <Text
-     style={[styles.foodCardTitleb,{color:"red"}]}>
-     Expired
-   </Text>
-   <Text
-     style={[styles.foodCardTitleb,{color:"red"}]}>
-    Please download again
-   </Text>
-   </View>
-           )}
-         
+            {!expire && (
+              <TouchableOpacity
+                onPress={() => {
+                  gotoReadBook();
+                }}
+                style={{
+                  width: 60,
+                  height: 29,
+                  borderRadius: 10,
+                  backgroundColor: '#d6d6d6',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={styles.foodCardTitleb}>READ</Text>
+              </TouchableOpacity>
+            )}
+            {expire && (
+              <View style={{width: '100%'}}>
+                <Text style={[styles.foodCardTitleb, {color: 'red'}]}>
+                  Expired
+                </Text>
+                <Text style={[styles.foodCardTitleb, {color: 'red'}]}>
+                  Please download again
+                </Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -144,15 +138,9 @@ function BookCardDownload(props) {
             </Text>
           </View>
         )} */}
- 
       </View>
- 
     </>
   );
- 
-
-   
- 
 }
 
 const styles = StyleSheet.create({
@@ -162,11 +150,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 25,
-   
-    elevation:5,
-    padding:5,
-    borderRadius:5
-    // backgroundColor: 'red',
+
+    padding: 5,
+    borderRadius: 5,
   },
 
   foodCardTxtConatiner: {
@@ -229,8 +215,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   fcBottom: {
-    
-    marginTop:10, 
+    marginTop: 10,
     width: '100%',
     // backgroundColor: 'red',
     // alignItems: 'center',
@@ -240,7 +225,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: theme.fonts.fontNormal,
     color: theme.color.title,
-     
   },
   addcart: {
     width: '60%',

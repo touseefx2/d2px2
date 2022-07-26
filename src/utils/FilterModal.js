@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   FlatList,
+  Platform,
 } from 'react-native';
 import theme from '../theme/index';
 import {
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     width: '100%',
     paddingHorizontal: ph,
-    paddingVertical: 10,
+    paddingVertical: Platform.OS == 'android' ? 10 : theme.window.APPBAR_HEIGHT,
     elevation: 20,
     backgroundColor: theme.color.background,
   },

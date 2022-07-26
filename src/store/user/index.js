@@ -503,15 +503,16 @@ class user {
         calFunc();
       })
       .catch(err => {
-        this.setloginLoader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.LOGIN_USER} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
+        console.log(`Error in ${db.apis.LOGIN_USER} : `, err);
+        //   this.setloginLoader(false);
+        //   let msg = err.response.data.message || err.response.status;
+        //   console.log(`Error in ${db.apis.LOGIN_USER} : `, msg);
+        //   if (msg == 503 || msg == 500) {
+        //     store.General.setisServerError(true);
+        //     return;
+        //   }
 
-        Alert.alert('', msg.toString());
+        //   Alert.alert('', msg.toString());
       });
   }
 

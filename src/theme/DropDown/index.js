@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import theme from '../index';
@@ -170,6 +171,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 15,
+
+    paddingVertical: Platform.OS == 'ios' ? 5 : 0,
   },
   rowContainer: {
     width: '100%',

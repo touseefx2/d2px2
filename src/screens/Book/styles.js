@@ -34,7 +34,10 @@ export const styles = StyleSheet.create({
     width: responsiveWidth(100),
     paddingHorizontal: 15,
     paddingVertical: 7,
-    top: theme.window.STATUSBAR_HEIGHT + 5,
+    top:
+      Platform.OS == 'android'
+        ? theme.window.STATUSBAR_HEIGHT + 5
+        : theme.window.APPBAR_HEIGHT + 10,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',

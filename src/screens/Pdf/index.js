@@ -11,6 +11,7 @@ import {
   Linking,
   Alert,
   Modal as MModal,
+  Platform,
 } from 'react-native';
 import {styles} from './styles';
 import {inject, observer} from 'mobx-react';
@@ -79,8 +80,8 @@ function PDF(props) {
   // console.log('adsL : ', ads.length);
   // console.log('dad : ', dad);
   // console.log('adtime : ', adTime);
-  console.log('addata : ', adData);
-  //   console.log('pL : ', pL);
+  // console.log('addata : ', adData);
+  // console.log('pL : ', pL);
 
   useEffect(() => {
     if (isShowAd && adLoad) {
@@ -174,7 +175,6 @@ function PDF(props) {
   }, [cp]);
 
   function handleBackButtonClick() {
-    setPageBck();
     goBack();
     return true;
   }
@@ -216,6 +216,7 @@ function PDF(props) {
   };
 
   const goBack = () => {
+    setPageBck();
     props.navigation.goBack();
   };
 
@@ -527,7 +528,10 @@ function PDF(props) {
                       backgroundColor: 'black',
                       borderRadius: 36 / 2,
                       position: 'absolute',
-                      top: 15,
+                      top:
+                        Platform.OS == 'android'
+                          ? 15
+                          : theme.window.APPBAR_HEIGHT,
                       right: 10,
                     }}>
                     <CountdownCircleTimer
