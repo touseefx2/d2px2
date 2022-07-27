@@ -70,22 +70,31 @@ function Splash(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle={'light-content'}
-      />
+      {Platform.OS == 'android' ? (
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={'light-content'}
+        />
+      ) : (
+        <StatusBar
+          translucent={false}
+          backgroundColor="black"
+          barStyle={'dark-content'}
+        />
+      )}
       <ImageBackground
         style={styles.background}
         blurRadius={3}
         source={require('../../assets/images/backgorund/img.jpeg')}>
-        <Image
-          style={styles.logo}
-          source={require('../../assets/images/logo/img.png')}
-        />
         <Text style={styles.title1}>Welcome To</Text>
         <Text style={styles.title2}>{store.General.AppName}</Text>
       </ImageBackground>
+
+      <Image
+        style={styles.logo}
+        source={require('../../assets/images/logo/img.png')}
+      />
     </SafeAreaView>
   );
 }

@@ -558,7 +558,12 @@ function PDF(props) {
 
             {adType == 'video' && (
               <>
-                <View style={{flex: 1}}>
+                <View
+                  style={{
+                    flex: 1,
+
+                    justifyContent: 'center',
+                  }}>
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => redirecturl(adData.redirect_url)}>
@@ -571,7 +576,7 @@ function PDF(props) {
                         setisShowAd(false);
                       }}
                       onLoad={() => setadLoad(true)}
-                      fullscreen
+                      disableFullscreen
                       showDuration={true}
                       disableSeek
                       disableControlsAutoHide

@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import theme from '../../theme/index';
 import {
   responsiveHeight,
@@ -23,7 +23,10 @@ export const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
     position: 'absolute',
-    top: theme.window.STATUSBAR_HEIGHT,
+    top:
+      Platform.OS == 'android'
+        ? theme.window.STATUSBAR_HEIGHT
+        : theme.window.APPBAR_HEIGHT + 10,
     left: 15,
     right: 15,
   },
