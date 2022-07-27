@@ -17,26 +17,6 @@ export default HomeStack = () => {
       <Stack.Screen name="DownloadStack" component={DownloadStack} />
       <Stack.Screen name="Profile" component={screens.Profile} />
       <Stack.Screen name="ChangePassword" component={screens.ChangePassword} />
-      {/* <Stack.Screen name="Location" component={screens.Location} />
-        <Stack.Screen name="Help" component={screens.Help} />
-      <Stack.Screen name="Search" component={screens.Search} />
-      <Stack.Screen name="Map" component={screens.Map} />
-      <Stack.Screen name="Checkout" component={screens.Checkout} />
-      <Stack.Screen name="OrderLocation" component={screens.OrderLocation} />
-      <Stack.Screen name="CheckLogin" component={screens.CheckLogin} />
-    
-      <Stack.Screen name="OTP" component={screens.OTP} />
-    
-     
-      <Stack.Screen name="PromoStack" component={PromoStack} />
-     
-     
-      <Stack.Screen name="Favourite" component={screens.Favourite} /> 
-      <Stack.Screen
-        name="OrderIndication"
-        component={screens.OrderIndication}
-      />
-      */}
     </Stack.Navigator>
   );
 };
@@ -55,14 +35,3 @@ const DownloadStack = () => {
     </Stack.Navigator>
   );
 };
-
-// const PromoStack = () => {
-//   return (
-//     <Stack.Navigator
-//       initialRouteName="Promo"
-//       screenOptions={{animationEnabled: false, headerShown: false}}>
-//       <Stack.Screen name="Promo" component={screens.Promo} />
-//       <Stack.Screen name="PromoDetails" component={screens.PromoDetails} />
-//     </Stack.Navigator>
-//   );
-// };

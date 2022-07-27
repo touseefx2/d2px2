@@ -37,12 +37,6 @@ function Signup(props) {
   const toast = useRef(null);
   const toastduration = 700;
   let screen = props.route.params.screen;
-
-  const window = Dimensions.get('window');
-  const {width, height} = window;
-  const LATITUDE_DELTA = 0.0922;
-  const LONGITUDE_DELTA = LATITUDE_DELTA + width / height;
-
   let loader = store.User.regLoader;
   var nameReg = /^[a-zA-Z ]{2,40}$/;
   const mobileReg = /^[3]\d{9}$/ || /^[0][3]\d{9}$/;
@@ -50,29 +44,35 @@ function Signup(props) {
 
   const [isDropDownCountry, setisDropDownCountry] = useState(false);
   const [isDropDownState, setisDropDownState] = useState(false);
-  const [isDropDownCity, setisDropDownCity] = useState(false);
-
   const [country, setcountry] = useState(false);
   const [state, setstate] = useState('');
   const [city, setcity] = useState('');
-  const [zc, setzc] = useState('');
-  const [sa, setsa] = useState('');
-
+  const [zipCode, setzipCode] = useState('');
+  const [streetAddress, setstreetAddress] = useState('');
   const [countryList, setcountryList] = useState([]);
   const [stateList, setstateList] = useState([]);
-
   const [phone, setphone] = useState('');
   const [isVerifyPhone, setisVerifyPhone] = useState('a');
   const [name, setname] = useState('');
   const [email, setemail] = useState('');
   const [pswd, setpswd] = useState('');
-  const [spswd, setspswd] = useState(false);
-  const [cpswd, setcpswd] = useState('');
-  const [scpswd, setscpswd] = useState(false);
+  const [showPswd, setshowPswd] = useState(false);
+  const [confirmPswd, setconfirmPswd] = useState('');
+  const [showConfirmPswd, setshowConfirmPswd] = useState(false);
+
+  // hook
 
   useEffect(() => {
     getAllCountries();
   }, []);
+
+  useEffect(() => {
+    if (country) {
+      getAllStates();
+    }
+  }, [country]);
+
+  // method
 
   const getAllCountries = async () => {
     let c = await getCountries();
@@ -83,12 +83,6 @@ function Signup(props) {
     let c = await getStates(country.code);
     setstateList(c);
   };
-
-  useEffect(() => {
-    if (country) {
-      getAllStates();
-    }
-  }, [country]);
 
   const goBack = () => {
     props.navigation.goBack();
@@ -103,7 +97,6 @@ function Signup(props) {
     Keyboard.dismiss();
     setisDropDownCountry(c);
     setisDropDownState(c);
-    setisDropDownCity(c);
   };
 
   const goLogin = () => {
@@ -159,11 +152,11 @@ function Signup(props) {
       return;
     }
 
-    if (zc == '') {
+    if (zipCode == '') {
       toast?.current?.show('Please enter your zip code', toastduration);
       return;
     }
-    if (sa == '') {
+    if (streetAddress == '') {
       toast?.current?.show('Please enter your street address', toastduration);
       return;
     }
@@ -181,12 +174,12 @@ function Signup(props) {
       return;
     }
 
-    if (cpswd == '') {
+    if (confirmPswd == '') {
       toast?.current?.show('Please enter your confirm password', toastduration);
       return;
     }
 
-    if (pswd != cpswd) {
+    if (pswd != confirmPswd) {
       toast?.current?.show('Confirm password not match', toastduration);
       return;
     }
@@ -199,8 +192,8 @@ function Signup(props) {
           password: pswd,
           phone: phone,
           address: {
-            name: sa,
-            zip: zc,
+            name: streetAddress,
+            zip: zipCode,
             city: city,
             state: state,
             country: country.name,
@@ -225,17 +218,12 @@ function Signup(props) {
     }
   };
 
+  // render
+
   const renderBottomButton = () => {
     return (
       <>
-        <View
-          style={{
-            width: '100%',
-            paddingHorizontal: 20,
-            paddingVertical: 12,
-            elevation: 20,
-            backgroundColor: theme.color.background,
-          }}>
+        <View style={styles.bottom1}>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={Signup}
@@ -243,34 +231,10 @@ function Signup(props) {
             <Text style={styles.bottomButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 7,
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: theme.color.subTitle,
-                fontFamily: theme.fonts.fontNormal,
-                textAlign: 'center',
-              }}>
-              Already have an Account?
-            </Text>
+          <View style={styles.bottom2}>
+            <Text style={styles.bottom3}>Already have an Account?</Text>
             <TouchableOpacity activeOpacity={0.5} onPress={goLogin}>
-              <Text
-                style={{
-                  marginLeft: 5,
-                  fontSize: 12,
-                  color: theme.color.subTitle,
-                  fontFamily: theme.fonts.fontNormal,
-                  textAlign: 'center',
-                  textDecorationLine: 'underline',
-                }}>
-                Login
-              </Text>
+              <Text style={styles.bottom4}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -283,8 +247,8 @@ function Signup(props) {
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={() => {
-          if (c == 'sp') setspswd(!spswd);
-          else setscpswd(!scpswd);
+          if (c == 'sp') setshowPswd(!showPswd);
+          else setshowConfirmPswd(!showConfirmPswd);
         }}
         style={{
           width: '10%',
@@ -325,7 +289,6 @@ function Signup(props) {
       data = countryList;
     } else if (c == 'state') {
       data = stateList;
-    } else if (c == 'city') {
     }
 
     const onclickSelect = d => {
@@ -333,22 +296,11 @@ function Signup(props) {
 
       if (c == 'country') {
         setcountry(d);
-        setstate("")
+        setstate('');
       } else if (c == 'state') {
         setstate(d);
-      } else if (c == 'city') {
       }
-
-      // NetInfo.fetch().then(state => {
-      //   if (state.isConnected) {
-
-      //   } else {
-      //     toast?.current?.show('Please connect internet', toastduration);
-      //   }
-      // });
     };
-
-    // console.log('drop down data : ', data);
 
     return (
       <theme.DropDown
@@ -366,15 +318,8 @@ function Signup(props) {
     );
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={theme.color.background}
-        barStyle={'dark-content'}
-      />
-      <utils.Loader text={'Please wait'} load={loader} />
-
+  const renderHeader = () => {
+    return (
       <View style={styles.header}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
           <utils.vectorIcon.Ionicons
@@ -384,296 +329,307 @@ function Signup(props) {
           />
         </TouchableOpacity>
       </View>
+    );
+  };
+
+  const renderStatusBar = () => {
+    return (
+      <StatusBar
+        translucent={false}
+        backgroundColor={theme.color.background}
+        barStyle={'dark-content'}
+      />
+    );
+  };
+
+  const renderMainContent = () => {
+    return (
+      <>
+        <Text style={styles.mcTitle}>Let's create your account!</Text>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Name</Text>
+          <View style={styles.InputContainer}>
+            <TextInput
+              maxLength={40}
+              style={styles.textInputStyle}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={name}
+              onChangeText={val => {
+                setname(val);
+              }}
+            />
+          </View>
+        </View>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Email</Text>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={email}
+              onChangeText={val => {
+                setemail(val);
+              }}
+            />
+          </View>
+        </View>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Contact No.</Text>
+          <View style={styles.InputContainer}>
+            <IntlPhoneInput
+              onChangeText={p => {
+                setPhoneNumber(p);
+              }}
+              defaultCountry="PK"
+              lang="EN"
+              renderAction={() => (
+                <>
+                  {!isVerifyPhone && phone != '' && (
+                    <utils.vectorIcon.Entypo
+                      name="cross"
+                      color={theme.color.subTitle}
+                      size={18}
+                    />
+                  )}
+
+                  {isVerifyPhone == true && (
+                    <utils.vectorIcon.Entypo
+                      name="check"
+                      color={'green'}
+                      size={18}
+                    />
+                  )}
+                </>
+              )}
+            />
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.inputFieldConatiner,
+            {
+              flexDirection: 'row',
+
+              justifyContent: 'space-between',
+            },
+          ]}>
+          <View style={{width: '48%'}}>
+            <Text style={styles.inputTitle}>Country</Text>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => {
+                closeAllDropDown();
+                setisDropDownCountry(!isDropDownCountry);
+              }}
+              style={[
+                styles.InputContainer,
+                {
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                },
+              ]}>
+              <View style={{width: '85%'}}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={[
+                    styles.textDropDown,
+                    {
+                      color: country ? theme.color.subTitle : theme.color.title,
+                    },
+                  ]}>
+                  {country ? country.name : 'Select Country'}
+                </Text>
+              </View>
+
+              {textInputRightIcon2()}
+            </TouchableOpacity>
+            {isDropDownCountry && renderDropDown('country')}
+          </View>
+
+          <View
+            style={{
+              width: '48%',
+            }}>
+            <Text style={styles.inputTitle}>State</Text>
+            <TouchableOpacity
+              disabled={!country ? true : false}
+              activeOpacity={0.6}
+              onPress={() => {
+                closeAllDropDown();
+                setisDropDownState(!isDropDownState);
+              }}
+              style={[
+                styles.InputContainer,
+                {
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: country
+                    ? theme.color.background
+                    : theme.color.disableBack,
+                },
+              ]}>
+              <View style={{width: '85%'}}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={[
+                    styles.textDropDown,
+                    {
+                      color:
+                        state == '' ? theme.color.subTitle : theme.color.title,
+                    },
+                  ]}>
+                  {state == '' ? 'Select State' : state}
+                </Text>
+              </View>
+
+              {textInputRightIcon2()}
+            </TouchableOpacity>
+            {isDropDownState && renderDropDown('state')}
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.inputFieldConatiner,
+            {
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            },
+          ]}>
+          <View style={{width: '48%'}}>
+            <Text style={styles.inputTitle}>City</Text>
+            <View style={styles.InputContainer}>
+              <TextInput
+                style={styles.textInputStyle}
+                placeholderTextColor={theme.color.subTitle}
+                placeholder=""
+                defaultValue={city}
+                onChangeText={val => {
+                  setcity(val);
+                }}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{
+              width: '48%',
+            }}>
+            <Text style={styles.inputTitle}>Zip Code</Text>
+            <View style={styles.InputContainer}>
+              <TextInput
+                keyboardType="number-pad"
+                style={styles.textInputStyle}
+                placeholderTextColor={theme.color.subTitle}
+                placeholder=""
+                value={zipCode}
+                maxLength={10}
+                defaultValue={zipCode}
+                onChangeText={val => {
+                  setzipCode(val.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''));
+                }}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Street Address</Text>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={streetAddress}
+              onChangeText={val => {
+                setstreetAddress(val);
+              }}
+            />
+          </View>
+        </View>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Password</Text>
+          <View
+            style={[
+              styles.InputContainer,
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              },
+            ]}>
+            <TextInput
+              secureTextEntry={!showPswd}
+              style={[styles.textInputStyle, {width: '85%'}]}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={pswd}
+              onChangeText={val => {
+                setpswd(val);
+              }}
+            />
+
+            {pswd.length > 0 && textInputRightIcon(showPswd, 'sp')}
+          </View>
+        </View>
+
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Confirm Password</Text>
+          <View
+            style={[
+              styles.InputContainer,
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              },
+            ]}>
+            <TextInput
+              secureTextEntry={!showConfirmPswd}
+              style={[styles.textInputStyle, {width: '85%'}]}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={confirmPswd}
+              onChangeText={val => {
+                setconfirmPswd(val);
+              }}
+            />
+
+            {confirmPswd.length > 0 &&
+              textInputRightIcon(showConfirmPswd, 'scp')}
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <utils.Loader text={'Please wait'} load={loader} />
+      <Toast ref={toast} position="center" />
+      {renderStatusBar()}
+      {renderHeader()}
 
       <KeyboardAvoidingView style={{flex: 1}}>
         <ScrollView
-          contentContainerStyle={{
-            width: '100%',
-            paddingHorizontal: 20,
-            paddingVertical: 12,
-          }}
+          contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}>
-          <Text
-            style={{
-              fontSize: 22,
-              color: theme.color.title,
-              fontFamily: theme.fonts.fontMedium,
-              marginBottom: 30,
-            }}>
-            Let's create your account!
-          </Text>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Name</Text>
-            <View style={styles.InputContainer}>
-              <TextInput
-                maxLength={40}
-                style={styles.textInputStyle}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={name}
-                onChangeText={val => {
-                  setname(val);
-                }}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Email</Text>
-            <View style={styles.InputContainer}>
-              <TextInput
-                style={styles.textInputStyle}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={email}
-                onChangeText={val => {
-                  setemail(val);
-                }}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Contact No.</Text>
-            <View style={styles.InputContainer}>
-              <IntlPhoneInput
-                onChangeText={p => {
-                  setPhoneNumber(p);
-                }}
-                defaultCountry="PK"
-                lang="EN"
-                renderAction={() => (
-                  <>
-                    {!isVerifyPhone && phone != '' && (
-                      <utils.vectorIcon.Entypo
-                        name="cross"
-                        color={theme.color.subTitle}
-                        size={18}
-                      />
-                    )}
-
-                    {isVerifyPhone == true && (
-                      <utils.vectorIcon.Entypo
-                        name="check"
-                        color={'green'}
-                        size={18}
-                      />
-                    )}
-                  </>
-                )}
-              />
-            </View>
-          </View>
-
-          <View
-            style={[
-              styles.inputFieldConatiner,
-              {
-                flexDirection: 'row',
-
-                justifyContent: 'space-between',
-              },
-            ]}>
-            <View style={{width: '48%'}}>
-              <Text style={styles.inputTitle}>Country</Text>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  closeAllDropDown();
-                  setisDropDownCountry(!isDropDownCountry);
-                }}
-                style={[
-                  styles.InputContainer,
-                  {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  },
-                ]}>
-                <View style={{width: '85%'}}>
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[
-                      styles.textDropDown,
-                      {
-                        color: country
-                          ? theme.color.subTitle
-                          : theme.color.title,
-                      },
-                    ]}>
-                    {country ? country.name : 'Select Country'}
-                  </Text>
-                </View>
-
-                {textInputRightIcon2()}
-              </TouchableOpacity>
-              {isDropDownCountry && renderDropDown('country')}
-            </View>
-
-            <View
-              style={{
-                width: '48%',
-              }}>
-              <Text style={styles.inputTitle}>State</Text>
-              <TouchableOpacity
-                disabled={!country ? true : false}
-                activeOpacity={0.6}
-                onPress={() => {
-                  closeAllDropDown();
-                  setisDropDownState(!isDropDownState);
-                }}
-                style={[
-                  styles.InputContainer,
-                  {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: country
-                      ? theme.color.background
-                      : theme.color.disableBack,
-                  },
-                ]}>
-                <View style={{width: '85%'}}>
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[
-                      styles.textDropDown,
-                      {
-                        color:
-                          state == ''
-                            ? theme.color.subTitle
-                            : theme.color.title,
-                      },
-                    ]}>
-                    {state == '' ? 'Select State' : state}
-                  </Text>
-                </View>
-
-                {textInputRightIcon2()}
-              </TouchableOpacity>
-              {isDropDownState && renderDropDown('state')}
-            </View>
-          </View>
-
-          <View
-            style={[
-              styles.inputFieldConatiner,
-              {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              },
-            ]}>
-            <View style={{width: '48%'}}>
-              <Text style={styles.inputTitle}>City</Text>
-              <View style={styles.InputContainer}>
-                <TextInput
-                  style={styles.textInputStyle}
-                  placeholderTextColor={theme.color.subTitle}
-                  placeholder=""
-                  defaultValue={city}
-                  onChangeText={val => {
-                    setcity(val);
-                  }}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: '48%',
-              }}>
-              <Text style={styles.inputTitle}>Zip Code</Text>
-              <View style={styles.InputContainer}>
-                <TextInput
-                  keyboardType="number-pad"
-                  style={styles.textInputStyle}
-                  placeholderTextColor={theme.color.subTitle}
-                  placeholder=""
-                  value={zc}
-                  maxLength={10}
-                  defaultValue={zc}
-                  onChangeText={val => {
-                    setzc(val.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, ''));
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Street Address</Text>
-            <View style={styles.InputContainer}>
-              <TextInput
-                style={styles.textInputStyle}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={sa}
-                onChangeText={val => {
-                  setsa(val);
-                }}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Password</Text>
-            <View
-              style={[
-                styles.InputContainer,
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                },
-              ]}>
-              <TextInput
-                secureTextEntry={!spswd}
-                style={[styles.textInputStyle, {width: '85%'}]}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={pswd}
-                onChangeText={val => {
-                  setpswd(val);
-                }}
-              />
-
-              {pswd.length > 0 && textInputRightIcon(spswd, 'sp')}
-            </View>
-          </View>
-
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Confirm Password</Text>
-            <View
-              style={[
-                styles.InputContainer,
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                },
-              ]}>
-              <TextInput
-                secureTextEntry={!scpswd}
-                style={[styles.textInputStyle, {width: '85%'}]}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={cpswd}
-                onChangeText={val => {
-                  setcpswd(val);
-                }}
-              />
-
-              {cpswd.length > 0 && textInputRightIcon(scpswd, 'scp')}
-            </View>
-          </View>
+          {renderMainContent()}
         </ScrollView>
       </KeyboardAvoidingView>
-      {renderBottomButton()}
 
-      <Toast ref={toast} position="center" />
+      {renderBottomButton()}
     </SafeAreaView>
   );
 }

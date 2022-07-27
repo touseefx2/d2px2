@@ -28,52 +28,43 @@ import Modal from 'react-native-modal';
 
 export default observer(Login);
 function Login(props) {
-  const toast = useRef(null);
-  const toastduration = 1000;
-
-  const window = Dimensions.get('window');
-  const {width, height} = window;
-  const LATITUDE_DELTA = 0.0922;
-  const LONGITUDE_DELTA = LATITUDE_DELTA + width / height;
-
-  let loader = store.User.loginLoader;
-  let fploader = store.User.fploader;
   const mobileReg = /^[3]\d{9}$/ || /^[0][3]\d{9}$/;
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-
+  const toast = useRef(null);
+  const toastduration = 1000;
+  let loader = store.User.loginLoader;
+  let forgotPassLoader = store.User.fploader;
   let screen = props.route.params.screen;
 
-  // const [phone, setphone] = useState('');
-  const [email, setemail] = useState(''); //street adress
-  const [pswd, setpswd] = useState('');
-  const [spswd, setspswd] = useState(false);
+  const [email, setemail] = useState('');
+  const [pswd, setshowPswd] = useState('');
+  const [showPswd, setspswd] = useState(false);
+  const [forgotPassModal, setforgotPassModal] = useState(false);
+  const [forgotEmail, setforgotEmail] = useState('');
 
-  const [fpModal, setfpModal] = useState(false);
-  const [femail, setfemail] = useState(''); //street adress
+  //method
 
   const goBack = () => {
     props.navigation.goBack();
-  };
-
-  const goHome = () => {
-    props.navigation.navigate('Home');
   };
 
   const goSignup = () => {
     props.navigation.navigate('Signup', {screen: screen});
   };
 
+  const closeForgotPaswdModal = () => {
+    setforgotPassModal(false);
+    setforgotEmail('');
+    Keyboard.dismiss();
+  };
+
+  const forgotPasSuc = () => {
+    setforgotPassModal(false);
+    toast?.current?.show('Please check your email', toastduration);
+  };
+
   const Login = () => {
     Keyboard.dismiss();
-    // if (phone == '') {
-    //   toast?.current?.show('Please enter your phone number');
-    //   return;
-    // }
-
-    // if (phone !== '' && mobileReg.test(phone) === false) {
-    //   toast?.current?.show('Your phone number is inavlid');
-    //   return;
-    // }
 
     if (email == '') {
       toast?.current?.show('Please enter your email');
@@ -98,11 +89,57 @@ function Login(props) {
           // registrationToken: store.User.notificationToken,
         };
         store.User.attemptToLogin(data, goBack);
-        // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
       } else {
         toast?.current?.show('Please connect internet', toastduration);
       }
     });
+  };
+
+  const sendForgotPaswd = () => {
+    Keyboard.dismiss();
+
+    if (forgotEmail == '') {
+      toast?.current?.show('Please enter your email');
+      return;
+    }
+
+    if (forgotEmail !== '' && emailReg.test(forgotEmail) === false) {
+      Alert.alert('', 'Your email pattern is invalid');
+      return;
+    }
+
+    NetInfo.fetch().then(state => {
+      if (state.isConnected) {
+        const data = {
+          email: email,
+        };
+        store.User.forgotPassword(data, forgotPasSuc);
+        // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
+      } else {
+        Alert.alert('Please connect internet');
+      }
+    });
+  };
+
+  // render
+
+  const rendertextInputRightIcon = () => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => setspswd(!showPswd)}
+        style={{
+          width: '10%',
+          alignItems: 'flex-end',
+        }}>
+        <utils.vectorIcon.Entypo
+          style={styles.inputRightIcon}
+          name={showPswd ? 'eye-with-line' : 'eye'}
+          color={theme.color.subTitle}
+          size={20}
+        />
+      </TouchableOpacity>
+    );
   };
 
   const renderBottomButton = () => {
@@ -158,62 +195,6 @@ function Login(props) {
     );
   };
 
-  const textInputRightIcon = () => {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={() => setspswd(!spswd)}
-        style={{
-          width: '10%',
-          alignItems: 'flex-end',
-        }}>
-        <utils.vectorIcon.Entypo
-          style={styles.inputRightIcon}
-          name={spswd ? 'eye-with-line' : 'eye'}
-          color={theme.color.subTitle}
-          size={20}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  const closeForgotPaswdModal = () => {
-    setfpModal(false);
-    setfemail('');
-    Keyboard.dismiss();
-  };
-
-  const forgotPasSuc = () => {
-    setfpModal(false);
-    toast?.current?.show('Please check your email', toastduration);
-  };
-
-  const sendForgotPaswd = () => {
-    Keyboard.dismiss();
-
-    if (femail == '') {
-      toast?.current?.show('Please enter your email');
-      return;
-    }
-
-    if (femail !== '' && emailReg.test(femail) === false) {
-      Alert.alert('', 'Your email pattern is invalid');
-      return;
-    }
-
-    NetInfo.fetch().then(state => {
-      if (state.isConnected) {
-        const data = {
-          email: email,
-        };
-        store.User.forgotPassword(data, forgotPasSuc);
-        // props.navigation.navigate('OTP', {screen: 'login', data: data, s: s});
-      } else {
-        Alert.alert('Please connect internet');
-      }
-    });
-  };
-
   const rednerForgotPaswdModal = () => {
     return (
       <Modal
@@ -223,7 +204,7 @@ function Login(props) {
         onBackButtonPress={() => {
           closeForgotPaswdModal();
         }}
-        isVisible={fpModal}>
+        isVisible={forgotPassModal}>
         <View
           style={{
             width: 300,
@@ -258,9 +239,9 @@ function Login(props) {
                 borderBottomWidth: 1.5,
               }}
               placeholder="a@a.com"
-              value={femail}
+              value={forgotEmail}
               onChangeText={text => {
-                setfemail(text);
+                setforgotEmail(text);
               }}
             />
           </View>
@@ -293,8 +274,8 @@ function Login(props) {
                 alignItems: 'flex-end',
               }}>
               <TouchableOpacity
-                disabled={femail == '' ? true : false}
-                style={{opacity: femail == '' ? 0.6 : 3}}
+                disabled={forgotEmail == '' ? true : false}
+                style={{opacity: forgotEmail == '' ? 0.6 : 3}}
                 onPress={sendForgotPaswd}>
                 <Text
                   style={{
@@ -312,15 +293,8 @@ function Login(props) {
     );
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={theme.color.background}
-        barStyle={'dark-content'}
-      />
-      <utils.Loader text={'Please wait'} load={loader || fploader} />
-      {rednerForgotPaswdModal()}
+  const renderHeader = () => {
+    return (
       <View style={styles.header}>
         <TouchableOpacity activeOpacity={0.4} onPress={goBack}>
           <utils.vectorIcon.Ionicons
@@ -330,87 +304,97 @@ function Login(props) {
           />
         </TouchableOpacity>
       </View>
+    );
+  };
 
-      <KeyboardAvoidingView style={{flex: 1}}>
-        <ScrollView
-          contentContainerStyle={{
-            width: '100%',
-            paddingHorizontal: 20,
-            paddingVertical: 12,
-          }}
-          showsVerticalScrollIndicator={false}>
-          <Text
-            style={{
-              fontSize: 26,
-              color: theme.color.title,
-              fontFamily: theme.fonts.fontMedium,
-              marginBottom: 30,
-            }}>
-            Login
-          </Text>
+  const renderMainContent = () => {
+    return (
+      <>
+        <Text style={styles.logoTitle}>Login</Text>
 
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Email</Text>
-            <View style={styles.InputContainer}>
-              <TextInput
-                style={styles.textInputStyle}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={email}
-                onChangeText={val => {
-                  setemail(val);
-                }}
-              />
-            </View>
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Email</Text>
+          <View style={styles.InputContainer}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={email}
+              onChangeText={val => {
+                setemail(val);
+              }}
+            />
           </View>
+        </View>
 
-          <View style={styles.inputFieldConatiner}>
-            <Text style={styles.inputTitle}>Password</Text>
-            <View
-              style={[
-                styles.InputContainer,
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                },
-              ]}>
-              <TextInput
-                secureTextEntry={!spswd}
-                style={[styles.textInputStyle, {width: '85%'}]}
-                placeholderTextColor={theme.color.subTitle}
-                placeholder=""
-                defaultValue={pswd}
-                onChangeText={val => {
-                  setpswd(val);
-                }}
-              />
-
-              {pswd.length > 0 && textInputRightIcon()}
-            </View>
+        <View style={styles.inputFieldConatiner}>
+          <Text style={styles.inputTitle}>Password</Text>
+          <View
+            style={[
+              styles.InputContainer,
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              },
+            ]}>
+            <TextInput
+              secureTextEntry={!showPswd}
+              style={[styles.textInputStyle, {width: '85%'}]}
+              placeholderTextColor={theme.color.subTitle}
+              placeholder=""
+              defaultValue={pswd}
+              onChangeText={val => {
+                setshowPswd(val);
+              }}
+            />
+            {pswd.length > 0 && rendertextInputRightIcon()}
           </View>
+        </View>
 
-          {/* <View style={{alignItems: 'flex-end'}}>
+        {/* <View style={{alignItems: 'flex-end'}}>
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={() => {
                 setfpModal(true);
               }}>
               <Text
-                style={{
-                  fontSize: 12,
-                  color: theme.color.subTitle,
-                  fontFamily: theme.fonts.fontNormal,
-                }}>
+                style={styles.fpt}>
                 Forgot Password?
               </Text>
             </TouchableOpacity>
           </View> */}
+      </>
+    );
+  };
+
+  const renderStatusBar = () => {
+    return (
+      <StatusBar
+        translucent={false}
+        backgroundColor={theme.color.background}
+        barStyle={'dark-content'}
+      />
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <utils.Loader text={'Please wait'} load={loader || forgotPassLoader} />
+      <Toast ref={toast} position="center" />
+      {renderStatusBar()}
+      {rednerForgotPaswdModal()}
+      {renderHeader()}
+
+      <KeyboardAvoidingView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}>
+          {renderMainContent()}
         </ScrollView>
       </KeyboardAvoidingView>
-      {renderBottomButton()}
 
-      <Toast ref={toast} position="center" />
+      {renderBottomButton()}
     </SafeAreaView>
   );
 }

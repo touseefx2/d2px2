@@ -2,24 +2,21 @@ import axios, {AxiosInstance} from 'axios';
 import apis from '../apis/index';
 
 let BASE_URL = apis.BASE_URL;
+let BASE_URL2 = apis.BASE_URL2;
 
-let BASE_URL2= apis.BASE_URL2;
-
-export  const hitApi = (
+export const hitApi = (
   endPoint: string,
   reqType: CALL_METHOD,
   params?: any,
   token?: string,
-
 ) => {
- 
   let occ: AxiosInstance;
   if (token !== null) {
     const header = {
       Authorization: `Bearer ${token}`,
     };
-    
-    occ = axios.create({baseURL:BASE_URL, headers: header});
+
+    occ = axios.create({baseURL: BASE_URL, headers: header});
   } else {
     occ = axios.create({
       baseURL: BASE_URL,
@@ -67,21 +64,19 @@ export  const hitApi = (
   }
 };
 
-export  const hitApi2 = (
+export const hitApi2 = (
   endPoint: string,
   reqType: CALL_METHOD,
   params?: any,
   token?: string,
- 
 ) => {
- 
   let occ: AxiosInstance;
   if (token !== null) {
     const header = {
       Authorization: `Bearer ${token}`,
     };
-    
-    occ = axios.create({baseURL:BASE_URL2, headers: header});
+
+    occ = axios.create({baseURL: BASE_URL2, headers: header});
   } else {
     occ = axios.create({
       baseURL: BASE_URL2,
@@ -128,7 +123,5 @@ export  const hitApi2 = (
       break;
   }
 };
-
- 
 
 export type CALL_METHOD = 'post' | 'get' | 'put';

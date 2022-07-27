@@ -428,4 +428,42 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.fontNormal,
   },
   inputRightIcon: {},
+  bottom1: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    elevation: 20,
+    backgroundColor: theme.color.background,
+  },
+  bottom2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 7,
+    justifyContent: 'center',
+  },
+  bottom3: {
+    fontSize: 12,
+    color: theme.color.subTitle,
+    fontFamily: theme.fonts.fontNormal,
+    textAlign: 'center',
+  },
+  bottom4: {
+    marginLeft: 5,
+    fontSize: 12,
+    color: theme.color.subTitle,
+    fontFamily: theme.fonts.fontNormal,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
+  scrollContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  mcTitle: {
+    fontSize: 22,
+    color: theme.color.title,
+    fontFamily: theme.fonts.fontMedium,
+    marginBottom: 30,
+  },
 });

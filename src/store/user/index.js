@@ -53,51 +53,12 @@ class user {
   @observable done = 0; //done uloaded image counter
   @observable isAllImageUploadDone = false;
 
-  @action setcart = obj => {
-    this.cart = obj;
-  };
-
-  @action setisAddModal = obj => {
-    this.isAddModal = obj;
-  };
-
-  @action setisSubModal = obj => {
-    this.isSubModal = obj;
-  };
-  @action setisChkLoginModal = obj => {
-    this.isChkLoginModal = obj;
-  };
-
-  @action setisVarModal = obj => {
-    this.isVarModal = obj;
-  };
-
   @action setloginLoader = obj => {
     this.loginLoader = obj;
   };
 
   @action setregLoader = obj => {
     this.regLoader = obj;
-  };
-
-  @action setLocation = obj => {
-    this.location = obj;
-  };
-
-  @action setfvrtList = obj => {
-    this.fvrtList = obj;
-  };
-
-  @action setadrsList = obj => {
-    this.adrsList = obj;
-  };
-
-  @action setadrsloader = obj => {
-    this.adrsloader = obj;
-  };
-
-  @action setfvrtloader = obj => {
-    this.fvrtloader = obj;
   };
 
   @action setadverBooks = obj => {
@@ -116,11 +77,6 @@ class user {
     this.catLoader = obj;
   };
 
-  @action.bound
-  addPolygons(val) {
-    this.polygons = val;
-  }
-
   @action setLoader = obj => {
     this.loader = obj;
   };
@@ -129,41 +85,9 @@ class user {
     this.fploader = obj;
   };
 
-  @action setonline = obj => {
-    this.online = obj;
-  };
-
-  @action setcl = obj => {
-    this.cl = obj;
-  };
-
-  @action setrl = obj => {
-    this.rl = obj;
-  };
-
-  @action.bound
-  setisAllImageUploadDone(c) {
-    this.isAllImageUploadDone = c;
-  }
-
-  @action.bound
-  settotal(t) {
-    this.total = t;
-  }
-
-  @action.bound
-  setdone(t) {
-    this.done = t;
-  }
-
   @action.bound
   setisGetAllDatainSplash(val) {
     this.isGetAllDatainSplash = val;
-  }
-
-  @action.bound
-  setUser(val) {
-    this.user = val;
   }
 
   @action.bound
@@ -293,202 +217,6 @@ class user {
   }
 
   @action.bound
-  attemptToGetFavtList() {
-    this.setfvrtloader(true);
-    db.hitApi(
-      db.apis.GET_FAVRT_FOOD_LIST_BY_USER_ID + this.user._id,
-      'get',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setfvrtloader(false);
-        console.log(
-          `response  ${db.apis.GET_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.setfvrtList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setfvrtloader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(
-          `Error in ${db.apis.GET_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          msg,
-        );
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        if (msg == 'No records found') {
-          // this.setfvrtList([]);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-
-  @action.bound
-  attemptToGetAdressList() {
-    this.setadrsloader(true);
-    db.hitApi(
-      db.apis.GET_ADDRESS_BY_USER_ID + this.user._id,
-      'get',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setadrsloader(false);
-        console.log(
-          `response  ${db.apis.GET_ADDRESS_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.setadrsList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setadrsloader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.GET_ADDRESS_BY_USER_ID} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        if (msg == 'No records found') {
-          // this.setfvrtList([]);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-
-  @action.bound
-  attemptToAddFavtList(id) {
-    this.setfvrtloader(true);
-    let fid = id;
-    db.hitApi(
-      db.apis.SET_FAVRT_FOOD_LIST_BY_USER_ID + this.user._id,
-      'post',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setfvrtloader(false);
-
-        console.log(
-          `response  ${db.apis.SET_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.setfvrtList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setfvrtloader(false);
-
-        let msg = err.response.data.message || err.response.status;
-        console.log(
-          `Error in ${db.apis.SET_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          msg,
-        );
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-
-  @action.bound
-  attemptToRemoveFavtList(id) {
-    this.setfvrtloader(true);
-    let fid = id;
-    db.hitApi(
-      db.apis.REMOVE_FAVRT_FOOD_LIST_BY_USER_ID + this.user._id,
-      'post',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setfvrtloader(false);
-        console.log(
-          `response  ${db.apis.REMOVE_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.setfvrtList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setfvrtloader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(
-          `Error in ${db.apis.REMOVE_FAVRT_FOOD_LIST_BY_USER_ID} : `,
-          msg,
-        );
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-
-  @action.bound
-  attemptToAddAddressList(id) {
-    this.setadrsloader(true);
-    let fid = id;
-    db.hitApi(
-      db.apis.ADD_ADDRESS_BY_USER_ID + this.user._id,
-      'post',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setadrsloader(false);
-        console.log(
-          `response  ${db.apis.ADD_ADDRESS_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.setadrsList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setadrsloader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.ADD_ADDRESS_BY_USER_ID} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-
-  @action.bound
-  attemptToRemoveAddressList(id) {
-    this.setadrsloader(true);
-    let fid = id;
-    db.hitApi(
-      db.apis.REMOVE_ADDRESS_BY_USER_ID + this.user._id,
-      'post',
-      null,
-      this.authToken,
-    )
-      ?.then((resp: any) => {
-        this.setadrsloader(false);
-        console.log(
-          `response  ${db.apis.REMOVE_ADDRESS_BY_USER_ID} : `,
-          resp.data,
-        );
-        // this.adrsList(resp.data.data[0]);
-      })
-      .catch(err => {
-        this.setadrsloader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.REMOVE_ADDRESS_BY_USER_ID} : `, msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg);
-      });
-  }
-  @action.bound
   attemptToLogin(body, calFunc) {
     this.setloginLoader(true);
 
@@ -503,57 +231,20 @@ class user {
         calFunc();
       })
       .catch(err => {
-        console.log(`Error in ${db.apis.LOGIN_USER} : `, err);
-        //   this.setloginLoader(false);
-        //   let msg = err.response.data.message || err.response.status;
-        //   console.log(`Error in ${db.apis.LOGIN_USER} : `, msg);
-        //   if (msg == 503 || msg == 500) {
-        //     store.General.setisServerError(true);
-        //     return;
-        //   }
-
-        //   Alert.alert('', msg.toString());
-      });
-  }
-
-  @action.bound
-  attemptToSubTopic() {
-    let body = {
-      token: this.notificationToken,
-      topic: 'contactus',
-    };
-
-    db.hitApi(db.apis.SUBSCRIBE_TOPIC, 'post', body, null)
-      ?.then((resp: any) => {
-        console.log(`response  ${db.apis.SUBSCRIBE_TOPIC} : `, resp.data);
-      })
-      .catch(err => {
+        this.setloginLoader(false);
         let msg = err.response.data.message || err.response.status;
-        console.log(`Error in ${db.apis.SUBSCRIBE_TOPIC} : `, msg);
+        console.log(`Error in ${db.apis.LOGIN_USER} : `, msg);
+        if (msg == 503 || msg == 500) {
+          store.General.setisServerError(true);
+          return;
+        }
+
+        Alert.alert('', msg.toString());
       });
   }
-
-  // @action.bound
-  // attempToPlaceOrder(Order, suc) {
-  //   this.setLoader(true);
-  //   db.hitApi(db.apis.PLACE_ORDER, 'post', Order, null)
-  //     ?.then(resp => {
-  //       this.setLoader(false)
-  //       console.log(`response  ${db.apis.PLACE_ORDER} : `, resp.data);
-  //       suc(resp.data);
-  //     })
-  //     .catch(err => {
-  //       console.log(
-  //         `Error in ${db.apis.PLACE_ORDER} : `,
-  //         err.response.data.message,
-  //       );
-  //       this.setLoader(false);
-  //     });
-  // }
 
   @action.bound
   registerUser(body, funCal) {
-    console.log('rgstr user body : ', body);
     this.setregLoader(true);
     db.hitApi(db.apis.REGISTER_USER, 'post', body, null)
       ?.then(resp => {
@@ -578,9 +269,6 @@ class user {
 
   @action.bound
   updateUser(body, funCall) {
-    console.log('update user body : ', body);
-    console.log('auth token : ', this.authToken);
-    console.log('api cal : ', db.apis.UPDATE_USER + this.user._id);
     this.setregLoader(true);
     db.hitApi(db.apis.UPDATE_USER + this.user._id, 'put', body, this.authToken)
       ?.then(resp => {
@@ -602,73 +290,6 @@ class user {
         //   }
         //   Alert.alert('', msg.toString());
       });
-  }
-
-  @action.bound
-  attemptToRegister(dataa, goHome, goCheckout, s) {
-    const {image} = dataa;
-    this.setregLoader(true);
-    let imgArr = [];
-    if (image != '') {
-      image.chk = 'profile';
-      imgArr.push(image);
-    }
-
-    if (imgArr.length > 0) {
-      try {
-        imgArr.map((e, i, a) => {
-          const data = new FormData();
-          const newFile = {
-            uri: e.uri,
-            type: e.type,
-            name: e.fileName,
-          };
-          data.append('files', newFile);
-          fetch(db.apis.BASE_URL + db.apis.IMAGE_UPLOAD, {
-            method: 'post',
-            body: data,
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          })
-            .then(response => response.json())
-            .then(responseData => {
-              let c = '';
-              if (e.chk == 'profile') {
-                c = responseData.data[0].imgrUrl;
-              }
-              if (i == a.length - 1) {
-                const dt = {...dataa};
-                delete dt.image;
-                dt.image = c;
-                this.registerUser(dt, goHome, goCheckout, s);
-                return;
-              }
-            })
-            .catch(err => {
-              this.setregLoader(false);
-              let msg = err.response.data.message || err.response.status;
-              console.log('Error in Upload Images arr', msg);
-              if (msg == 503 || msg == 500) {
-                store.General.setisServerError(true);
-                return;
-              }
-              Alert.alert('', msg);
-            });
-        });
-      } catch (err) {
-        this.setregLoader(false);
-        let msg = err.response.data.message || err.response.status;
-        console.log('Error in Upload Images arr', msg);
-        if (msg == 503 || msg == 500) {
-          store.General.setisServerError(true);
-          return;
-        }
-        Alert.alert('', msg);
-      }
-    } else {
-      this.registerUser(dataa, goHome, goCheckout, s);
-    }
   }
 
   @action.bound
@@ -731,13 +352,10 @@ class user {
   Logout(goHome) {
     this.authToken = '';
 
-    // this.setfvrtList([]);
-    // this.setadrsList([]);
     store.Downloads.setdata([]);
     store.Downloads.setpList([]);
     store.Downloads.setdefaultAd([]);
-    // this.setisGetAllDatainSplash(false);
-    // this.setcart({totalbill: 0, totalitems: 0, data: []});
+
     this.setUser(false);
     if (goHome != '') {
       goHome();

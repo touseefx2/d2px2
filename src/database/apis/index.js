@@ -1,13 +1,10 @@
-//online link  ec2
-// const BASE_URL = 'http://ec2-13-126-235-46.ap-south-1.compute.amazonaws.com/';
-
 //local link
 // const BASE_URL = 'http://192.168.100.18:9000/';
 
 //online link
 const BASE_URL = 'http://ec2-3-80-110-152.compute-1.amazonaws.com/';
 
-//defaultad link
+//default ads link
 const BASE_URL2 = 'http://ec2-18-206-55-156.compute-1.amazonaws.com/';
 
 //apis
@@ -67,43 +64,3 @@ export default apis = {
   GET_DEF_AD,
   FORGOT_PASWD,
 };
-
-// const login = 'user/loginCaptain';
-// const OWNER_REG_EP = 'user/addCaptain';
-// const updateUser = 'user/updateUser/';
-// const updateTerms = 'user/termsAccepted/';
-// const uploadFile = 'upload/uploadFile';
-// const getCar = 'vehicle?owner=';
-// const getUserById = 'user?_id=';
-// const getTripsbyId = 'trip/getTrips?_id=';
-// const acceptTrip = 'trip/acceptTrip/';
-// const skipTrip = 'user/skipTrip/';
-// const arriveTrip = 'trip/arriveTrip/';
-// const startTrip = 'trip/startTrip/';
-// const endTrip = 'trip/endTrip/';
-// const getAvgRating = 'user/getAverageRating?user=';
-// const cancelTrip = 'trip/cancelTrip/';
-// const addTripRating = 'trip/rateCustomer/';
-// const paycashEqual = 'trip/paybill/';
-// const paycashExtra = 'trip/paybill/addtodebit/';
-// const paycashLess = 'trip/paybill/addtocredit/';
-
-// const getcustomerWalletinfo = 'transaction_history/getHistoryByUser?user=';
-
-// const gettripbyUserwithDate = 'user/tripbyuser?user=';
-// const getportalwithDate = 'user/captainPortal?user=';
-// const gettotaltripCalculationwithDate = 'user/getTripRecord?user=';
-
-// const getTripDispute = 'dispute?trip=';
-// const addTripDispute = 'dispute/add';
-
-// const getTripTransctionHistory = 'transaction_history/getHistoryByTrip?trip=';
-
-// const GET_BRANDS = 'company?is_active=true';
-// const GET_ALL_CAR_NAMES = 'car_name?is_active=true';
-// const GET_VEHICLE_TYPE = 'vehicle_type';
-// const ADD_CAR = 'vehicle/add';
-// const UPDATE_CAR = 'vehicle/';
-// const UPDATE_USER = 'user/updateUser/';
-// const GET_NOTIFICATION = 'notification/getNotification/';
-// const UPDATE_NOTIFICATION = 'notification/readNotification/';

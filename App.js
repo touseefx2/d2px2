@@ -9,21 +9,18 @@ import screens from './src/screens/index';
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
 import store from './src/store/index';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 export default observer(App);
-
 function App(props) {
   const Stack = createNativeStackNavigator();
 
   useEffect(() => {
     GlobalFont.applyGlobal(theme.fonts.fontNormal);
-
     const unsubscribeNetinfo = NetInfo.addEventListener(state => {
       store.General.setInternet(state.isConnected);
     });
-
     const unsubscribeAppState = AppState.addEventListener(
       'change',
       appState => {
@@ -35,14 +32,11 @@ function App(props) {
         }
       },
     );
-
     store.General.setapiLevel(DeviceInfo.getApiLevel());
     store.General.setappBuildNumber(DeviceInfo.getBuildNumber());
     store.General.setappVersionNumber(DeviceInfo.getVersion());
-
     return () => {
       unsubscribeNetinfo();
-      // unsubscribeAppState();
     };
   }, []);
 

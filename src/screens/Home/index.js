@@ -10,14 +10,12 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-
 import {styles} from './styles';
 import {observer} from 'mobx-react';
 import store from '../../store/index';
 import utils from '../../utils/index';
 import theme from '../../theme';
 import DynamicTabView from 'react-native-dynamic-tab-view';
-
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import NetInfo from '@react-native-community/netinfo';
 import Toast from 'react-native-easy-toast';
@@ -30,12 +28,18 @@ export default observer(Home);
 function Home(props) {
   let internet = store.General.isInternet;
   let tagLine = '';
-
   let coverImage = require('../../assets/images/homeCover/img.jpg');
   const rbSheet = useRef(null);
   const rbSheet2 = useRef(null);
   const toast = useRef(null);
   const user = store.User.user;
+  const getBooksLoader = store.User.AdverbookLoader;
+  const adverBooks = store.User.adverBooks;
+  const bookCat = store.User.bookCat;
+  let getDataOnce = store.User.isGetAllDatainSplash;
+  let isServerError = store.General.isServerError;
+  const selectedFilter = store.General.selectedFilter;
+
   const windowWidth = theme.window.Width;
   const imageAspectWidth = 375;
   const imageAspectHeight = 332;
@@ -46,33 +50,22 @@ function Home(props) {
   const controlPointX = windowWidth / 2.0;
   const controlPointY = scaledHeight + curveAdjustment;
   const curveCenterPointY = (controlPointY - maskHeight) / 2;
+
   const [search, setsearch] = useState('');
   const [data, setData] = useState(false);
   const [category, setCategory] = useState([]);
-  const [isCatModalVisible, setisCatModalVisible] = useState(false);
-
   const [selectedTab, setselectedTab] = useState('');
-
-  const selectedFilter = store.General.selectedFilter;
   const [numOfSelFilter, setnumOfSelFilter] = useState(0);
-
   const [filter, setfilter] = useState([]);
-
-  const getBooksLoader = store.User.AdverbookLoader;
   const [load, setload] = useState(false);
 
-  const adverBooks = store.User.adverBooks;
-  const bookCat = store.User.bookCat;
-  let getDataOnce = store.User.isGetAllDatainSplash;
-  let isServerError = store.General.isServerError;
+  //hook
 
   useEffect(() => {
     if (!getDataOnce && internet) {
       NetInfo.fetch().then(state => {
         if (state.isConnected) {
-          let dd = data.slice();
-          dd[0].data = 'chk';
-          setData(dd);
+          setData(false);
           let isLogin = store.User.user !== false ? true : false;
           if (isLogin) {
             store.User.getAllData('user');
@@ -137,49 +130,12 @@ function Home(props) {
     }
   }, [selectedFilter]);
 
-  const renderTab = e => {
-    let d = e;
-
-    if (d.name != 'empty') {
-      if (selectedFilter.length <= 0) {
-        return (
-          <utils.BookCard
-            data={d}
-            nav={props.navigation}
-            screen="home"
-            toast={toast}
-          />
-        );
-      } else {
-        let chk = false;
-
-        selectedFilter.map((e, i, a) => {
-          if (e.section == 'categories') {
-            e.items.map((e, i, a) => {
-              if (e.name == d.book_category.category_name) {
-                chk = true;
-              }
-            });
-          }
-        });
-
-        if (chk) {
-          return (
-            <utils.BookCard
-              data={d}
-              nav={props.navigation}
-              screen="home"
-              toast={toast}
-            />
-          );
-        }
-      }
-    }
-  };
+  //method
 
   const onChangeTab = e => {
     setselectedTab(data[e].title);
   };
+
   const onPressFilter = () => {
     let selFilter = selectedFilter;
 
@@ -229,6 +185,48 @@ function Home(props) {
         setfilter(arr);
         rbSheet2?.current?.open();
         return;
+      }
+    }
+  };
+
+  //render
+
+  const renderTab = e => {
+    let d = e;
+
+    if (d.name != 'empty') {
+      if (selectedFilter.length <= 0) {
+        return (
+          <utils.BookCard
+            data={d}
+            nav={props.navigation}
+            screen="home"
+            toast={toast}
+          />
+        );
+      } else {
+        let chk = false;
+
+        selectedFilter.map((e, i, a) => {
+          if (e.section == 'categories') {
+            e.items.map((e, i, a) => {
+              if (e.name == d.book_category.category_name) {
+                chk = true;
+              }
+            });
+          }
+        });
+
+        if (chk) {
+          return (
+            <utils.BookCard
+              data={d}
+              nav={props.navigation}
+              screen="home"
+              toast={toast}
+            />
+          );
+        }
       }
     }
   };
@@ -634,51 +632,54 @@ function Home(props) {
     );
   };
 
+  const renderShowData = () => {
+    return (
+      <View style={{flex: 1}}>
+        <DynamicTabView
+          data={data}
+          search={search}
+          defaultIndex={0}
+          renderTab={renderTab}
+          onChangeTab={onChangeTab}
+          headerTextStyle={{
+            color: theme.color.title,
+            fontFamily: theme.fonts.fontMedium,
+          }}
+          headerBackgroundColor={theme.color.background}
+          headerUnderlayColor={theme.color.button1}
+          containerStyle={{
+            backgroundColor: theme.color.background,
+            overflow: 'hidden',
+          }}
+        />
+        {renderSearchBox()}
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {isServerError && <utils.ServerRes />}
-      {renderStatusBar()}
       {!internet && <utils.InternetMessage color={theme.color.button1} />}
-      {/* {tagLine != '' && <utils.TagLine tagLine={tagLine} />} */}
+      <Toast ref={toast} position="bottom" />
+      {renderStatusBar()}
       {renderFilterSheet()}
       {renderBottomSheet()}
-
       <View>
         {renderImageSliderBox()}
         {renderTitleSection()}
       </View>
-
-      {getBooksLoader || (load && renderLoaderShow())}
+      {(getBooksLoader || load) && renderLoaderShow()}
       {!getBooksLoader &&
         !load &&
         data !== false &&
         data.length <= 0 &&
         renderEmptyShow()}
-      {!getBooksLoader && !load && data !== false && data.length > 0 && (
-        <View style={{flex: 1}}>
-          <DynamicTabView
-            data={data}
-            search={search}
-            defaultIndex={0}
-            renderTab={renderTab}
-            onChangeTab={onChangeTab}
-            headerTextStyle={{
-              color: theme.color.title,
-              fontFamily: theme.fonts.fontMedium,
-            }}
-            headerBackgroundColor={theme.color.background}
-            headerUnderlayColor={theme.color.button1}
-            containerStyle={{
-              backgroundColor: theme.color.background,
-              overflow: 'hidden',
-            }}
-          />
-
-          {renderSearchBox()}
-        </View>
-      )}
-
-      <Toast ref={toast} position="bottom" />
+      {!getBooksLoader &&
+        !load &&
+        data !== false &&
+        data.length > 0 &&
+        renderShowData()}
     </SafeAreaView>
   );
 }

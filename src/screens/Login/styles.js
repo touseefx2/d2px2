@@ -410,4 +410,20 @@ export const styles = StyleSheet.create({
     fontFamily: theme.fonts.fontNormal,
   },
   inputRightIcon: {},
+  logoTitle: {
+    fontSize: 26,
+    color: theme.color.title,
+    fontFamily: theme.fonts.fontMedium,
+    marginBottom: 30,
+  },
+  fpt: {
+    fontSize: 12,
+    color: theme.color.subTitle,
+    fontFamily: theme.fonts.fontNormal,
+  },
+  scrollContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
 });
