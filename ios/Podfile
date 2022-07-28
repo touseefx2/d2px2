@@ -29,6 +29,8 @@ target 'D2P' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   
+  pod 'react-native-version-check', :path => '../node_modules/react-native-version-check'
+
   target 'D2PTests' do
     inherit! :complete
     # Pods for testing

@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect} from 'react';
 import {
   Text,
   View,
@@ -13,11 +13,31 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react';
 import styles from './styles';
-import LinearGradient from 'react-native-linear-gradient';
 import theme from '../../theme';
-
 export default observer(Update);
 function Update(props) {
+
+  // hook
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButtonClick,
+    );
+
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+      subscription.remove();
+    };
+  }, []);
+
+  function handleBackButtonClick() {
+   
+    return true;
+  }
 
     //method
 
@@ -54,7 +74,7 @@ function Update(props) {
   const renderStatusBar=()=>{
     return(
         <StatusBar
-        animated={true}
+        
         barStyle="light-content"
         backgroundColor={theme.color.button1}
       />
@@ -70,11 +90,11 @@ function Update(props) {
           style={styles.logo}
         />
 
-        <View style={{width: '100%'}}>
+        <View style={{width: '100%',  marginTop:60}}>
           <Text style={styles.title}>Update Needed</Text>
         </View>
 
-        <View style={{width: 300, marginTop: 10}}>
+        <View style={{width: 300, marginTop: 30}}>
           <Text style={styles.Description}>
             In order to continue using the application, please update the app
             to the latest version
@@ -88,11 +108,16 @@ function Update(props) {
 
   const renderButton=()=>{
     return(
-        <TouchableOpacity
+      <View style={{paddingHorizontal:20,paddingBottom:Platform.OS=="ios"?theme.window.APPBAR_HEIGHT+10:20,paddingTop:20}}>
+
+    <TouchableOpacity
+    activeOpacity={0.5}
         style={styles.ContinueButton}
         onPress={onClickButton}>
         <Text style={styles.ContinueButtonText}>Update Now</Text>
       </TouchableOpacity>
+      </View>
+      
     )
   }
 
@@ -100,16 +125,14 @@ function Update(props) {
     <SafeAreaView style={styles.Container}>
         {renderStatusBar()}
         
-      <LinearGradient
-        colors={[theme.color.button1, theme.color.button2]}
-        style={styles.LinearGradient}>
+     
             <ScrollView showsVerticalScrollIndicator={false}>
             {renderMainContent()}
             </ScrollView>
 
             {renderButton()}
          
-      </LinearGradient>
+      
     </SafeAreaView>
   );
 }

@@ -33,23 +33,24 @@ Platform.OS === 'android'
 export default observer(Splash);
 
 function Splash(props) {
+
+  // hook 
+
   useEffect(() => {
-    HydarteStore();
+   cehcking();
   }, []);
+
+  // method 
 
   const hydrateStores = async () => {
     const hydrate = create({storage: AsyncStorage});
     await hydrate('General', store.General);
     await hydrate('User', store.User);
     await hydrate('Downloads', store.Downloads);
-    // await hydrate('Book', store.Food);
-
-    // await hydrate('Promos', store.Promos);
-    // await hydrate("citystore", store.cityStore);
-    // await hydrate("notificationmanager", store.NotificationManager);
+     
   };
 
-  const HydarteStore = async () => {
+  const  cehcking = async () => {
     await hydrateStores();
     checkIsUserLogin();
   };
@@ -68,9 +69,12 @@ function Splash(props) {
     }, timeout);
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {Platform.OS == 'android' ? (
+  // render
+  
+  const renderStatusBar=()=>{
+    return(
+      <>
+       {Platform.OS == 'android' ? (
         <StatusBar
           translucent
           backgroundColor="transparent"
@@ -83,6 +87,13 @@ function Splash(props) {
           barStyle={'dark-content'}
         />
       )}
+      </>
+    )
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {renderStatusBar()}
       <ImageBackground
         style={styles.background}
         blurRadius={3}
@@ -90,7 +101,6 @@ function Splash(props) {
         <Text style={styles.title1}>Welcome To</Text>
         <Text style={styles.title2}>{store.General.AppName}</Text>
       </ImageBackground>
-
       <Image
         style={styles.logo}
         source={require('../../assets/images/logo/img.png')}

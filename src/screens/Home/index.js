@@ -23,15 +23,16 @@ import MaskedView from '@react-native-community/masked-view';
 import Svg, {Path} from 'react-native-svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {TextInput} from 'react-native-paper';
+import VersionCheck from 'react-native-version-check';
 
 export default observer(Home);
 function Home(props) {
-  let internet = store.General.isInternet;
   let tagLine = '';
   let coverImage = require('../../assets/images/homeCover/img.jpg');
   const rbSheet = useRef(null);
   const rbSheet2 = useRef(null);
   const toast = useRef(null);
+  let internet = store.General.isInternet;
   const user = store.User.user;
   const getBooksLoader = store.User.AdverbookLoader;
   const adverBooks = store.User.adverBooks;
@@ -39,6 +40,7 @@ function Home(props) {
   let getDataOnce = store.User.isGetAllDatainSplash;
   let isServerError = store.General.isServerError;
   const selectedFilter = store.General.selectedFilter;
+  const isUpdateNeeded= store.General.isUpdateNeeded
 
   const windowWidth = theme.window.Width;
   const imageAspectWidth = 375;
@@ -60,6 +62,19 @@ function Home(props) {
   const [load, setload] = useState(false);
 
   //hook
+
+  useEffect(()=>{
+if(internet){
+  checkUpdateNeeded();
+}
+  },[internet])
+
+  useEffect(()=>{
+    if(isUpdateNeeded){
+      goToUpdate();
+    }
+  
+  },[isUpdateNeeded])
 
   useEffect(() => {
     if (!getDataOnce && internet) {
@@ -131,6 +146,28 @@ function Home(props) {
   }, [selectedFilter]);
 
   //method
+
+  const  goToUpdate=()=>{
+    props.navigation.navigate("Update")
+  }
+
+  const checkUpdateNeeded = async () => {
+try {
+  let updateNeeded = await VersionCheck.needUpdate();
+  
+  if (updateNeeded.isNeeded) {
+    console.log('UPDATE Needed');
+     store.General.setisUpdateNeeded(true)
+  } else {
+    console.log('UPDATE NOT Needed');
+    store.General.setisUpdateNeeded(false)
+  }
+} catch (error) {
+  console.log("Update check error : ",error)
+}
+
+   
+  };
 
   const onChangeTab = e => {
     setselectedTab(data[e].title);

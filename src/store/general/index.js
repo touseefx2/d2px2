@@ -13,10 +13,15 @@ class general {
   @observable isInternet = false;
   @observable isLocation = false;
   @observable appState = AppState.currentState;
+  @observable selectedFilter = [];
+  @observable isUpdateNeeded = false;
   @persist @observable apiLevel = '';
   @persist @observable appBuildNumber = '';
   @persist @observable appVersionNumber = '';
-  @observable selectedFilter = [];
+
+  @action setisUpdateNeeded = obj => {
+    this.isUpdateNeeded = obj;
+  };
 
   @action setselectedFilter = obj => {
     this.selectedFilter = obj;

@@ -72,17 +72,7 @@ function PDF(props) {
   let name = d.book_title || '';
   let pL = store.Downloads.pList || [];
 
-  // console.log('dt : ', dt);
-  // console.log('book : ', d);
-  console.log('slots : ', slot);
-  // console.log('sL : ', slot.length);
-  // console.log('ads : ', ads);
-  // console.log('adsL : ', ads.length);
-  // console.log('dad : ', dad);
-  // console.log('adtime : ', adTime);
-  // console.log('addata : ', adData);
-  // console.log('pL : ', pL);
-
+  
   useEffect(() => {
     if (isShowAd && adLoad) {
       NetInfo.fetch().then(state => {
@@ -646,6 +636,19 @@ function PDF(props) {
       </>
     );
   };
+
+  // console.log('dt : ', dt);
+  // console.log('book : ', d);
+  console.log('slots : ', slot);
+  // console.log('sL : ', slot.length);
+  // console.log('ads : ', ads);
+  // console.log('adsL : ', ads.length);
+  // console.log('dad : ', dad);
+  // console.log('adtime : ', adTime);
+  // console.log('addata : ', adData);
+  // console.log('pL : ', pL);
+
+
 
   return (
     <>

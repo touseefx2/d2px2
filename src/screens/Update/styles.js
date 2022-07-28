@@ -1,35 +1,34 @@
-import theme from '../../theme';
 import {StyleSheet, Dimensions} from 'react-native';
-
+import theme from '../../theme';
 
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
+   backgroundColor:theme.color.button1
+  },
  
-  },
-  Status: {
-
-  },
   logo: {
-    height: '20%',
-    width: '50%',
-    resizeMode: 'contain',
-    marginTop: 30,
+   marginTop:55
   },
   title: {
-    fontSize: 22,
+    fontSize: 26,
     fontFamily: theme.fonts.fontBold,
-    color: theme.color.buttonText,
+    color: theme.color.background,
+  
   },
   Description: {
-    fontSize: 16,
-    fontFamily: theme.fonts.fontNormal,
-    color: theme.color.buttonText,
+    fontSize: 17,
+    fontFamily: theme.fonts.fontMedium,
+    color: theme.color.background,
+  letterSpacing:1,
+  lineHeight:30
   },
   Body: {
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
     flex: 1,
+     
+    padding:20
   },
   ContinueButton: {
     backgroundColor: theme.color.background,
@@ -38,8 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     alignSelf: 'center',
-    position: 'absolute',
-    bottom: 20,
+  
   },
   ContinueButtonText: {
     alignSelf: 'center',
@@ -52,8 +50,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     justifyContent: 'center',
-    borderRadius: 4,
     alignItems: 'center',
+    backgroundColor:theme.color.button1
   },
 });
 
