@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import screens from '../../screens/index';
 
@@ -17,6 +16,7 @@ export default HomeStack = () => {
       <Stack.Screen name="DownloadStack" component={DownloadStack} />
       <Stack.Screen name="Profile" component={screens.Profile} />
       <Stack.Screen name="ChangePassword" component={screens.ChangePassword} />
+      <Stack.Screen name="Update" component={screens.Update} />
     </Stack.Navigator>
   );
 };

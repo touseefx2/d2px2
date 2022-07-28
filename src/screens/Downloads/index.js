@@ -28,8 +28,11 @@ function Downloads(props) {
   let internet = store.General.isInternet;
   let downloads = store.Downloads.data;
   let loader = store.Downloads.loader;
+
   const toast = useRef(null);
   const [data, setdata] = useState(false);
+
+  //hook
 
   useEffect(() => {
     if (internet) {
@@ -39,72 +42,76 @@ function Downloads(props) {
 
   useEffect(() => {
     if (downloads.length > 0) {
-      let dt = downloads.slice();
-
-      const did = dt
-        .map(v => v.book._id)
-        .filter((v, i, vIds) => vIds.indexOf(v) !== i);
-      const uarray = [...new Set(did)];
-      console.log('dplct id : ', did);
-      console.log('u arr : ', uarray);
-      let di = [];
-      if (uarray.length > 0) {
-        uarray.map((e, i, a) => {
-          let ad = [e];
-
-          const duplicates = dt.filter(obj => ad.includes(obj.book._id));
-
-          if (duplicates.length > 0) {
-            console.log('u arr data : ', duplicates);
-
-            duplicates.map((e, i, a) => {
-              if (i < a.length - 1) {
-                di.push(e._id);
-              }
-            });
-          }
-        });
-      }
-      console.log('di : ', di);
-
-      let fd = downloads.slice();
-      let dind = [];
-      if (di.length > 0) {
-        di.map((e, i, a) => {
-          const index = fd.findIndex(object => {
-            return object._id === e;
-          });
-          if (index > -1) {
-            dind.push(index);
-          }
-        });
-
-        console.log('deleted index : ', dind);
-
-        setdata(downloads);
-      }
-
-      let ddd = [];
-      if (dind.length > 0) {
-        ddd = fd.filter(function (value, index) {
-          return dind.indexOf(index) == -1;
-        });
-      } else {
-        ddd = fd;
-      }
-      //sort exire data
-      // if (ddd.length > 0) {
-      //   ddd.sort(function (a, b) {
-      //     var x = a.expired == false ? -1 : 1;
-      //     return x;
-      //   });
-      // }
-
-      setdata(ddd);
+      setDataWithFilter();
     } else {
       setdata([]);
     }
   }, [downloads]);
+
+  // method
+
+  const setDataWithFilter = () => {
+    let dt = downloads.slice();
+
+    const did = dt //duplicate id
+      .map(v => v.book._id)
+      .filter((v, i, vIds) => vIds.indexOf(v) !== i);
+    const uarray = [...new Set(did)]; //unique array
+
+    let di = []; //duplicate ids
+    if (uarray.length > 0) {
+      uarray.map((e, i, a) => {
+        let ad = [e];
+
+        const duplicates = dt.filter(obj => ad.includes(obj.book._id));
+
+        if (duplicates.length > 0) {
+          console.log('u arr data : ', duplicates);
+
+          duplicates.map((e, i, a) => {
+            if (i < a.length - 1) {
+              di.push(e._id);
+            }
+          });
+        }
+      });
+    }
+
+    let fd = downloads.slice();
+    let dind = []; //duplicate index
+    if (di.length > 0) {
+      di.map((e, i, a) => {
+        const index = fd.findIndex(object => {
+          return object._id === e;
+        });
+        if (index > -1) {
+          dind.push(index);
+        }
+      });
+
+      console.log('deleted index : ', dind);
+
+      setdata(downloads);
+    }
+
+    let ddd = [];
+    if (dind.length > 0) {
+      ddd = fd.filter(function (value, index) {
+        return dind.indexOf(index) == -1;
+      });
+    } else {
+      ddd = fd;
+    }
+    //sort exp+ire data
+    // if (ddd.length > 0) {
+    //   ddd.sort(function (a, b) {
+    //     var x = a.expired == false ? -1 : 1;
+    //     return x;
+    //   });
+    // }
+
+    setdata(ddd);
+  };
 
   const goBack = () => {
     props.navigation.goBack();
@@ -116,7 +123,9 @@ function Downloads(props) {
     return dd + ', ' + tt;
   };
 
-  const renderShowOrder = ({item, index}) => {
+  // render
+
+  const renderItems = ({item, index}) => {
     const e = item;
     const i = index;
     const a = data.length;
@@ -136,9 +145,8 @@ function Downloads(props) {
     );
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {!internet && <utils.InternetMessage />}
+  const renderHeader = () => {
+    return (
       <View style={styles.header}>
         <View style={styles.back}>
           <TouchableOpacity activeOpacity={0.6} onPress={goBack}>
@@ -151,43 +159,60 @@ function Downloads(props) {
         </View>
         <Text style={styles.htitle}>My Downloads</Text>
       </View>
+    );
+  };
 
-      {loader && (
-        <ActivityIndicator
-          size={40}
-          color={theme.color.button1}
-          style={{position: 'absolute', top: '45%', alignSelf: 'center'}}
+  const renderLoad = () => {
+    return (
+      <ActivityIndicator
+        size={40}
+        color={theme.color.button1}
+        style={{position: 'absolute', top: '45%', alignSelf: 'center'}}
+      />
+    );
+  };
+
+  const renderEmptyData = () => {
+    return (
+      <View style={styles.emptySECTION}>
+        <Image
+          style={styles.emptyImg}
+          source={require('../../assets/images/empty/img.png')}
         />
-      )}
+        <Text style={styles.emptyText}>Sorry!</Text>
+        <Text style={[styles.emptyText, {marginTop: -5}]}>
+          Currently no books are available here
+        </Text>
+      </View>
+    );
+  };
 
-      {!loader && data != false && data.length <= 0 && (
-        <View style={styles.emptySECTION}>
-          <Image
-            style={styles.emptyImg}
-            source={require('../../assets/images/empty/img.png')}
-          />
-          <Text style={styles.emptyText}>Sorry!</Text>
-          <Text style={[styles.emptyText, {marginTop: -5}]}>
-            Currently no books are available here
-          </Text>
-        </View>
-      )}
+  const renderShowData = () => {
+    return (
+      <FlatList
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+        data={data}
+        renderItem={renderItems}
+        keyExtractor={(item, index) => {
+          return index.toString();
+        }}
+        initialNumToRender={6}
+        maxToRenderPerBatch={6}
+        removeClippedSubviews={true}
+      />
+    );
+  };
 
-      {!loader && data != false && data.length > 0 && (
-        <FlatList
-          contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}}
-          showsVerticalScrollIndicator={false}
-          data={data}
-          renderItem={renderShowOrder}
-          keyExtractor={(item, index) => {
-            return index.toString();
-          }}
-          initialNumToRender={6}
-          maxToRenderPerBatch={6}
-          removeClippedSubviews={true}
-        />
-      )}
+  return (
+    <SafeAreaView style={styles.container}>
+      {!internet && <utils.InternetMessage />}
       <Toast ref={toast} position="bottom" />
+      {renderHeader()}
+
+      {loader && renderLoad()}
+      {!loader && data != false && data.length <= 0 && renderEmptyData()}
+      {!loader && data != false && data.length > 0 && renderShowData()}
     </SafeAreaView>
   );
 }

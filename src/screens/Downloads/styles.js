@@ -222,4 +222,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  scrollContainer: {
+ 
+    paddingHorizontal: 15, paddingVertical: 10
+  }
 });
