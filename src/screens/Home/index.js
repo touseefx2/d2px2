@@ -40,7 +40,7 @@ function Home(props) {
   let getDataOnce = store.User.isGetAllDatainSplash;
   let isServerError = store.General.isServerError;
   const selectedFilter = store.General.selectedFilter;
-  const isUpdateNeeded= store.General.isUpdateNeeded
+  const isUpdateNeeded = store.General.isUpdateNeeded;
 
   const windowWidth = theme.window.Width;
   const imageAspectWidth = 375;
@@ -63,18 +63,17 @@ function Home(props) {
 
   //hook
 
-  useEffect(()=>{
-if(internet){
-  checkUpdateNeeded();
-}
-  },[internet])
+  useEffect(() => {
+    if (internet) {
+      checkUpdateNeeded();
+    }
+  }, [internet]);
 
-  useEffect(()=>{
-    if(isUpdateNeeded){
+  useEffect(() => {
+    if (isUpdateNeeded) {
       goToUpdate();
     }
-  
-  },[isUpdateNeeded])
+  }, [isUpdateNeeded]);
 
   useEffect(() => {
     if (!getDataOnce && internet) {
@@ -147,26 +146,24 @@ if(internet){
 
   //method
 
-  const  goToUpdate=()=>{
-    props.navigation.navigate("Update")
-  }
+  const goToUpdate = () => {
+    props.navigation.navigate('Update');
+  };
 
   const checkUpdateNeeded = async () => {
-try {
-  let updateNeeded = await VersionCheck.needUpdate();
-  
-  if (updateNeeded.isNeeded) {
-    console.log('UPDATE Needed');
-     store.General.setisUpdateNeeded(true)
-  } else {
-    console.log('UPDATE NOT Needed');
-    store.General.setisUpdateNeeded(false)
-  }
-} catch (error) {
-  console.log("Update check error : ",error)
-}
+    try {
+      let updateNeeded = await VersionCheck.needUpdate();
 
-   
+      if (updateNeeded.isNeeded) {
+        console.log('UPDATE Needed');
+        store.General.setisUpdateNeeded(true);
+      } else {
+        console.log('UPDATE NOT Needed');
+        store.General.setisUpdateNeeded(false);
+      }
+    } catch (error) {
+      console.log('Update check error : ', error);
+    }
   };
 
   const onChangeTab = e => {

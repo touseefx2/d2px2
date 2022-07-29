@@ -46,7 +46,7 @@ target 'D2P' do
   
 pre_install do |installer|
   installer.pod_targets.each do |pod|
-    if pod.name.eql?('RNCMaskedView')
+    if pod.name.eql?('RNCMaskedView') || pod.name.eql?('RNVersionCheck')
       def pod.build_type
         Pod::BuildType.static_library
       end
@@ -54,6 +54,7 @@ pre_install do |installer|
   end
 end
 
+ 
   post_install do |installer|
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
