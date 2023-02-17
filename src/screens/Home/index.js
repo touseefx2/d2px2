@@ -540,29 +540,21 @@ function Home(props) {
   };
 
   const renderStatusBar = () => {
-    if (Platform.OS == 'android') {
-      if (internet && tagLine == '') {
-        return (
-          <StatusBar
-            translucent
-            backgroundColor="transparent"
-            barStyle={'light-content'}
-          />
-        );
-      } else {
-        return (
-          <StatusBar
-            translucent={false}
-            backgroundColor={theme.color.button1}
-            barStyle={'dark-content'}
-          />
-        );
-      }
+    if (internet && tagLine == '') {
+      return (
+        <StatusBar
+          translucent={Platform.OS == 'ios' ? false : true}
+          backgroundColor={
+            Platform.OS == 'ios' ? theme.color.background : 'transparent'
+          }
+          barStyle={Platform.OS == 'ios' ? 'dark-content' : 'light-content'}
+        />
+      );
     } else {
       return (
         <StatusBar
           translucent={false}
-          backgroundColor={'black'}
+          backgroundColor={theme.color.button1}
           barStyle={'dark-content'}
         />
       );

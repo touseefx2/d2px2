@@ -33,24 +33,22 @@ Platform.OS === 'android'
 export default observer(Splash);
 
 function Splash(props) {
-
-  // hook 
+  // hook
 
   useEffect(() => {
-   cehcking();
+    checking();
   }, []);
 
-  // method 
+  // method
 
   const hydrateStores = async () => {
     const hydrate = create({storage: AsyncStorage});
     await hydrate('General', store.General);
     await hydrate('User', store.User);
     await hydrate('Downloads', store.Downloads);
-     
   };
 
-  const  cehcking = async () => {
+  const checking = async () => {
     await hydrateStores();
     checkIsUserLogin();
   };
@@ -70,26 +68,26 @@ function Splash(props) {
   };
 
   // render
-  
-  const renderStatusBar=()=>{
-    return(
+
+  const renderStatusBar = () => {
+    return (
       <>
-       {Platform.OS == 'android' ? (
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle={'light-content'}
-        />
-      ) : (
-        <StatusBar
-          translucent={false}
-          backgroundColor="black"
-          barStyle={'dark-content'}
-        />
-      )}
+        {Platform.OS == 'android' ? (
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={'light-content'}
+          />
+        ) : (
+          <StatusBar
+            translucent={false}
+            backgroundColor="black"
+            barStyle={'dark-content'}
+          />
+        )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
